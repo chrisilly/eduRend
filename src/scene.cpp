@@ -1,5 +1,6 @@
 
 #include "Scene.h"
+#include "Cube.h"
 #include "QuadModel.h"
 #include "OBJModel.h"
 
@@ -47,6 +48,9 @@ void OurTestScene::Init()
 	// Move camera to (0,0,5)
 	m_camera->MoveTo({ 0, 0, 5 });
 
+	// Rend-L1 CUBE
+	m_cube = new Cube(m_dxdevice, m_dxdevice_context);
+
 	// Create objects
 	m_quad = new QuadModel(m_dxdevice, m_dxdevice_context);
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
@@ -76,11 +80,17 @@ void OurTestScene::Update(
 	// If no transformation is desired, an identity matrix can be obtained 
 	// via e.g. Mquad = linalg::mat4f_identity; 
 
+	// Rend-L1 Cube ///
+	m_cube_transform = mat4f::translation(0, 0, 0) *	// No translation
+	mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *		// Rotate continuously around the y-axis
+	mat4f::scaling(1.5, 1.5, 1.5);						// Scale uniformly to 150%
+	//m_cube_transform = linalg::mat4f_identity;
+
 	// Quad model-to-world transformation
 	m_quad_transform = mat4f::translation(0, 0, 0) *			// No translation
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
 		mat4f::scaling(1.5, 1.5, 1.5);				// Scale uniformly to 150%
-
+	
 	// Sponza model-to-world transformation
 	m_sponza_transform = mat4f::translation(0, -5, 0) *		 // Move down 5 units
 		mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * // Rotate pi/2 radians (90 degrees) around y
@@ -110,10 +120,14 @@ void OurTestScene::Render()
 	// Obtain the matrices needed for rendering from the camera
 	m_view_matrix = m_camera->WorldToViewMatrix();
 	m_projection_matrix = m_camera->ProjectionMatrix();
+	
+	// Rend-L1 Cube
+	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
+	m_cube->Render();
 
-	// Load matrices + the Quad's transformation to the device and render it
-	UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
-	m_quad->Render();
+	//// Load matrices + the Quad's transformation to the device and render it
+	//UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
+	//m_quad->Render();
 
 	// Load matrices + Sponza's transformation to the device and render it
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
@@ -122,6 +136,10 @@ void OurTestScene::Render()
 
 void OurTestScene::Release()
 {
+
+	// Rend-L1 Cube
+	SAFE_DELETE(m_cube);
+
 	SAFE_DELETE(m_quad);
 	SAFE_DELETE(m_sponza);
 	SAFE_DELETE(m_camera);

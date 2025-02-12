@@ -159,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="lib\stb_image.h" />
     <ClInclude Include="src\buffers.h" />
+    <ClInclude Include="src\cube.h" />
     <ClInclude Include="src\objmodel.h" />
     <ClInclude Include="src\quadmodel.h" />
     <ClInclude Include="src\camera.h" />
@@ -178,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\cube.cpp" />
     <ClCompile Include="src\inputhandler.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\objloader.cpp" />

@@ -85,10 +85,15 @@ class OurTestScene : public Scene
 	//
 	Camera* m_camera;
 
+	// Rend-L1 Cube
+	Model* m_cube;
+
 	Model* m_quad;
 	Model* m_sponza;
 
 	mat4f m_sponza_transform;
+	// Rend-L1 Cube
+	mat4f m_cube_transform;
 	mat4f m_quad_transform;
 
 	mat4f m_view_matrix;
