@@ -40,19 +40,19 @@ Cube::Cube(
 	v3.TexCoord = { 1, 0 };
 
 	// East face
-	v4.Position = { };
+	v4.Position = { 0.5, -0.5, -0.5 };
 	v4.Normal = { 1, 0, 0 };
 	v4.TexCoord = { 0, 0 };
 
-	v5.Position = { };
+	v5.Position = { 0.5, 0.5, -0.5 };
 	v5.Normal = { 1, 0, 0 };
 	v5.TexCoord = { 0, 1 };
 
-	v6.Position = { };
+	v6.Position = { 0.5, 0.5, 0.5 };
 	v6.Normal = { 1, 0, 0 };
 	v6.TexCoord = { 1, 1 };
 
-	v7.Position = { };
+	v7.Position = { 0.5, -0.5, 0.5 };
 	v7.Normal = { 1, 0, 0 };
 	v7.TexCoord = { 1, 0 };
 
@@ -74,36 +74,36 @@ Cube::Cube(
 	v11.TexCoord = { 1, 0 };
 
 	// West Face
-	v12.Position = { };
+	v12.Position = { -0.5, -0.5, -0.5 };
 	v12.Normal = { -1, 0, 0 };
 	v12.TexCoord = { 0, 0 };
 
-	v13.Position = { };
+	v13.Position = { -0.5, 0.5, -0.5 };
 	v13.Normal = { -1, 0, 0 };
 	v13.TexCoord = { 0, 1 };
 
-	v14.Position = { };
+	v14.Position = { -0.5, 0.5, 0.5 };
 	v14.Normal = { -1, 0, 0 };
 	v14.TexCoord = { 1, 1 };
 
-	v15.Position = { };
+	v15.Position = { -0.5, -0.5, 0.5 };
 	v15.Normal = { -1, 0, 0 };
 	v15.TexCoord = { 1, 0 };
 
 	// North Face
-	v16.Position = { };
+	v16.Position = { -0.5, 0.5f, -0.5 };
 	v16.Normal = { 0, 1, 0 };
 	v16.TexCoord = { 0, 0 };
 
-	v17.Position = { };
+	v17.Position = { 0.5, 0.5f, -0.5 };
 	v17.Normal = { 0, 1, 0 };
 	v17.TexCoord = { 0, 1 };
 
-	v18.Position = { };
+	v18.Position = { 0.5, 0.5f, 0.5 };
 	v18.Normal = { 0, 1, 0 };
 	v18.TexCoord = { 1, 1 };
 
-	v19.Position = { };
+	v19.Position = { -0.5, 0.5f, 0.5 };
 	v19.Normal = { 0, 1, 0 };
 	v19.TexCoord = { 1, 0 };
 
@@ -162,23 +162,48 @@ Cube::Cube(
 	indices.push_back(3);
 
 	// East Face
+	// Triangle #1
+	indices.push_back(4);
+	indices.push_back(5);
+	indices.push_back(7);
+	// Triangle #2
+	indices.push_back(5);
+	indices.push_back(6);
+	indices.push_back(7);
+
 
 	// Front Face
 	//Triangle #1
-	indices.push_back(8);
 	indices.push_back(9);
+	indices.push_back(8);
 	indices.push_back(11);
 	//Triangle #2
 	indices.push_back(9);
-	indices.push_back(10);
 	indices.push_back(11);
+	indices.push_back(10);
 
 	// West Face
+	// Triangle #1
+	indices.push_back(13);
+	indices.push_back(12);
+	indices.push_back(15);
+	// Triangle #2
+	indices.push_back(13);
+	indices.push_back(15);
+	indices.push_back(14);
 
 	// North Face
+	// Triangle #1
+	indices.push_back(17);
+	indices.push_back(16);
+	indices.push_back(19);
+	// Triangle #2
+	indices.push_back(17);
+	indices.push_back(19);
+	indices.push_back(18);
 
 	// South Face
-	// Triangle #1
+	
 	indices.push_back(20);
 	indices.push_back(21);
 	indices.push_back(23);

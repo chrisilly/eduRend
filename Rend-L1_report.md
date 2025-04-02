@@ -74,6 +74,10 @@ v23.TexCoord = { 1, 0 };
 
 For some reason, the FRONT face, is rendering in the wrong direction. Maybe it's due to the way I'm pushing them back to `indices`? `TexCoord`s? `Position`? It can't be the `Normal`...
 
+After some tinkering, I realised that it was the *order* in which I was pushing back the vertices into the `indices` that caused the incorrect face orientation, independent of the vertex normals.
+
+![Rendered cube](images/cube.png)
+
 # 2. Camera Control
 
 # 3. Hierarchical transformations
