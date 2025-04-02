@@ -74,12 +74,16 @@ void OurTestScene::Update(
 	if (input_handler.IsKeyPressed(Keys::Left) || input_handler.IsKeyPressed(Keys::A))
 		m_camera->Move({ -m_camera_velocity * dt, 0.0f, 0.0f });
 
-	long mousedx = input_handler.GetMouseDeltaX();
-	long mousedy = input_handler.GetMouseDeltaY();
-	float sensitivity = (1 / 300.0f);
-	
-	m_camera->RotateX(mousedx * sensitivity);
-	m_camera->RotateY(mousedy * sensitivity);		
+	#pragma region LAB 1 CAMERA SOLUTION DEPRECATED
+	//long mousedx = input_handler.GetMouseDeltaX();
+	//long mousedy = input_handler.GetMouseDeltaY();
+	//float sensitivity = (1 / 300.0f);
+	//
+	//m_camera->RotateX(mousedx * sensitivity);
+	//m_camera->RotateY(mousedy * sensitivity);
+	#pragma endregion
+
+	m_camera->Rotate(input_handler.GetMouseInputX(), input_handler.GetMouseInputY());
 
 	// Now set/update object transformations
 	// This can be done using any sequence of transformation matrices,

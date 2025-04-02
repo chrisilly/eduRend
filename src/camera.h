@@ -24,7 +24,7 @@ public:
 	 * @param[in] far_plane Far plane distance, must be larger than the near plane.
 	*/
 	inline constexpr Camera(float vertical_fov, float aspect_ratio, float near_plane, float far_plane) noexcept 
-		: m_vertical_fov(vertical_fov), m_aspect_ratio(aspect_ratio), m_near_plane(near_plane), m_far_plane(far_plane), m_position(0.0f) {}
+		: m_vertical_fov(vertical_fov), m_aspect_ratio(aspect_ratio), m_near_plane(near_plane), m_far_plane(far_plane), m_position(0.0f), m_pitch(0), m_yaw(0) {}
 
 	/**
 	 * @brief Move the camera to a new position
@@ -58,8 +58,14 @@ public:
 	*/
 	linalg::mat4f ProjectionMatrix() const noexcept;
 
+	#pragma region LAB 1 CAMERA SOLUTION DEPRACATED
 	void RotateX(float mousedx);
 	void RotateY(float mousedy);
+	#pragma endregion
+
+	// Lab 2 solution
+	void RotateTo(const float& yaw, const float& pitch) noexcept;
+	void Rotate(const float& yaw, const float& pitch) noexcept;
 
 private:
 	// Aperture attributes
@@ -76,7 +82,11 @@ private:
 	float m_far_plane;
 
 	linalg::vec3f m_position;
+	float m_pitch;
+	float m_yaw;
+
 	linalg::vec3f m_rotation;
+	//linalg::mat4f m_rotation;
 };
 
 #endif

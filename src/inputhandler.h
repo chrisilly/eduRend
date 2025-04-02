@@ -36,7 +36,7 @@ public:
 	 * @see Initialize(HINSTANCE, HWND, int, int)
 	*/
 	constexpr InputHandler() noexcept 
-		: m_direct_input(nullptr), m_keyboard(nullptr), m_mouse(nullptr), m_keyboard_state(), m_mouse_state(), m_previous_mouse_state(), m_screen_width(0), m_screen_height(0), m_mouse_x(0), m_mouse_y(0) {}
+		: m_direct_input(nullptr), m_keyboard(nullptr), m_mouse(nullptr), m_keyboard_state(), m_mouse_state(), m_previous_mouse_state(), m_screen_width(0), m_screen_height(0), m_mouse_x(0), m_mouse_y(0), m_mouse_sensitivity(0.003f) {}
 
 	/**
 	 * @brief Destructor, does nothing, see Shutdown()
@@ -110,6 +110,18 @@ public:
 	*/
 	LONG GetMouseDeltaY() const noexcept;
 
+	/// <summary>
+	/// Adjusts mouse X delta, respecting mouse sensitivity
+	/// </summary>
+	/// <returns></returns>
+	float GetMouseInputX() const noexcept;
+
+	/// <summary>
+	/// Adjusts mouse Y delta, respecting mouse sensitivity
+	/// </summary>
+	/// <returns></returns>
+	float GetMouseInputY() const noexcept;
+
 private:
 	IDirectInput8* m_direct_input;
 	IDirectInputDevice8* m_keyboard;
@@ -118,6 +130,8 @@ private:
 	DIMOUSESTATE m_mouse_state, m_previous_mouse_state;
 	int m_screen_width, m_screen_height;
 	int m_mouse_x, m_mouse_y;
+
+	float m_mouse_sensitivity;
 
 	bool ReadKeyboard() noexcept;
 	bool ReadMouse() noexcept;

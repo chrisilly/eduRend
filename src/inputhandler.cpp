@@ -142,6 +142,16 @@ LONG InputHandler::GetMouseDeltaY() const noexcept
 	return m_mouse_state.lY;
 }
 
+float InputHandler::GetMouseInputX() const noexcept
+{
+	return GetMouseDeltaX() * m_mouse_sensitivity;
+}
+
+float InputHandler::GetMouseInputY() const noexcept
+{
+	return GetMouseDeltaY() * m_mouse_sensitivity;
+}
+
 bool InputHandler::ReadKeyboard() noexcept
 {
 	HRESULT result;
