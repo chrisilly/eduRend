@@ -58,6 +58,9 @@ public:
 	*/
 	linalg::mat4f ProjectionMatrix() const noexcept;
 
+	void RotateX(float mousedx);
+	void RotateY(float mousedy);
+
 private:
 	// Aperture attributes
 	float m_vertical_fov;
@@ -73,6 +76,7 @@ private:
 	float m_far_plane;
 
 	linalg::vec3f m_position;
+	linalg::vec3f m_rotation;
 };
 
 #endif

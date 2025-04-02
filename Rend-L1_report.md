@@ -80,6 +80,37 @@ After some tinkering, I realised that it was the *order* in which I was pushing 
 
 # 2. Camera Control
 
+In order to implement the camera controls, I added Rotate methods in the `camera` class.
+
+```cpp
+void Camera::RotateX(const float mousedx)
+{
+	m_rotation.x += mousedx;
+}
+
+void Camera::RotateY(const float mousedy)
+{
+	m_rotation.y += mousedy;
+}
+```
+
+I also updated it `WorldToViewMatrix()` to include a `mat4f::rotation()` in its calculations, using a new `m_rotation` variable which is updated whenever we move the mouse. The mouse input logic and sensitivity is handled in `scene.cpp`.
+
+```cpp
+mat4f Camera::WorldToViewMatrix() const noexcept
+{
+	return mat4f::translation(-m_position) * mat4f::rotation(0, m_rotation.x, m_rotation.y);
+}
+```
+
+The only funky thing with the result is that the rotation happens around an origin point rather than rotating around the camera itself. In order to rotate around the camera instead of an origin point, I reverse the matrix multiplication order.
+
+```cpp
+return mat4f::rotation(0, m_rotation.x, m_rotation.y) * mat4f::translation(-m_position);
+```
+
+However, when moving the the mouse downward, the camera rotates down (from the players point of view) when facing one direction, but rotates upward when facing another. This is because it's rotating the same direction/way, regardless of player orientation.
+
 # 3. Hierarchical transformations
 
 <!-- # 4. OBJ-export & Import -->

@@ -203,7 +203,7 @@ Cube::Cube(
 	indices.push_back(18);
 
 	// South Face
-	
+	// Triangle #1
 	indices.push_back(20);
 	indices.push_back(21);
 	indices.push_back(23);
