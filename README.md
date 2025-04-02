@@ -1,3 +1,40 @@
+# eduRend Lab Exercises
+
+By **Chris Illy Culling**
+
+2025-04-02
+
+16% **| OO—————————— |**
+
+## Lab 1: Cube & Camera
+
+- [x] Cube class
+- [x] Mouse-controlled camera rotation
+- [ ] Hierarchical transformations
+
+Non-mandatory:
+- [ ] OBJ-export & import
+
+## Lab 2: First-person Camera, Phong Shading
+
+- [ ] First-person Camera
+- [ ] Constant Buffers
+- [ ] Phong Shading
+
+## Lab 3: Textures and Samplers
+
+- [ ] Import, bind and use a texture
+- [ ] Sampler, address modes and filters
+
+## Lab 4: Normal Mapping
+
+- [ ] Implement normal mapping
+
+## Lab 5: Reflective Shader and Skybox
+
+- [ ] Phong with reflected component
+- [ ] Skybox
+
 # eduRend
 ![eduRend](EDU_2d_s.png)
 
