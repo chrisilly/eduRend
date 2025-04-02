@@ -4,13 +4,13 @@ By **Chris Illy Culling**
 
 2025-04-02
 
-16% **| OO—————————— |**
+**23%** — **| OOO————————— |**
 
 ## Lab 1: Cube & Camera
 
 - [x] Cube class
 - [x] Mouse-controlled camera rotation
-- [ ] Hierarchical transformations
+- [x] Hierarchical transformations
 
 Non-mandatory:
 - [ ] OBJ-export & import

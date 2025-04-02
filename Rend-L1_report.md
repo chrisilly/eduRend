@@ -111,6 +111,25 @@ return mat4f::rotation(0, m_rotation.x, m_rotation.y) * mat4f::translation(-m_po
 
 However, when moving the the mouse downward, the camera rotates down (from the players point of view) when facing one direction, but rotates upward when facing another. This is because it's rotating the same direction/way, regardless of player orientation.
 
-# 3. Hierarchical transformations
+# 3. Hierarchical Transformations
+
+I started out by making two identical copies of my `m_cube`, which I've named `m_orbiterCube` and `m_orbiterCube2`. I instantiate and render them in exactly the same way. I only edited their translation transform to render them in different places, making sure they all exist and render as intended.
+
+![Three floating cubes in an ornate, colourful untextured room](images/threecubes.png)
+
+Then, to get our first `m_orbiterCube` to orbit our original `m_cube`, we can simply multiply their transforms.
+
+```cpp
+m_orbiterCube_transform = m_cube_transform * m_orbiterCube_transform;
+```
+
+Then, in order to get `m_orbiterCube2` to orbit `m_orbiterCube` while `m_orbiterCube` itself is orbiting `m_cube`, we multiply `m_orbiterCube2`'s transform in exactly the same way, parenting `m_orbiterCube` to it this time.
+
+```cpp
+m_orbiterCube2_transform = m_orbiterCube_transform * m_orbiterCube2_transform;
+```
+
+### Illustrated Result
+![Cubes with illustrated trajectories](images/orbitingCubes.png)
 
 <!-- # 4. OBJ-export & Import -->

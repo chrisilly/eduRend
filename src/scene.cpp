@@ -51,6 +51,8 @@ void OurTestScene::Init()
 	// Create objects
 	m_quad = new QuadModel(m_dxdevice, m_dxdevice_context);
 	m_cube = new Cube(m_dxdevice, m_dxdevice_context);
+	m_orbiterCube = new Cube(m_dxdevice, m_dxdevice_context);
+	m_orbiterCube2 = new Cube(m_dxdevice, m_dxdevice_context);
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
 }
 
@@ -94,6 +96,21 @@ void OurTestScene::Update(
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
 		mat4f::scaling(1.5, 1.5, 1.5);				// Scale uniformly to 150%
 
+	m_orbiterCube_transform = mat4f::translation(4, 0, 0) *			// No translation
+		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
+		mat4f::scaling(1, 1, 1);				// Scale uniformly to 150%
+
+	m_orbiterCube_transform = m_cube_transform * m_orbiterCube_transform;
+
+	m_orbiterCube2_transform = mat4f::translation(-1.5, 0, 0) *			// No translation
+		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
+		mat4f::scaling(0.5, 0.5, 0.5);				// Scale uniformly to 150%
+
+	m_orbiterCube2_transform = m_orbiterCube_transform * m_orbiterCube2_transform;
+
+	// nvm, the camera doesn't have a transform, wtf??
+	// I was gonna make the camera a child of m_orbiterCube2 and make it go weeeeee
+
 	// Sponza model-to-world transformation
 	m_sponza_transform = mat4f::translation(0, -5, 0) *		 // Move down 5 units
 		mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * // Rotate pi/2 radians (90 degrees) around y
@@ -131,6 +148,12 @@ void OurTestScene::Render()
 	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
 	m_cube->Render();
 
+	UpdateTransformationBuffer(m_orbiterCube_transform, m_view_matrix, m_projection_matrix);
+	m_orbiterCube->Render();
+
+	UpdateTransformationBuffer(m_orbiterCube2_transform, m_view_matrix, m_projection_matrix);
+	m_orbiterCube2->Render();
+
 	// Load matrices + Sponza's transformation to the device and render it
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
 	m_sponza->Render();
@@ -140,6 +163,8 @@ void OurTestScene::Release()
 {
 	SAFE_DELETE(m_quad);
 	SAFE_DELETE(m_cube);
+	SAFE_DELETE(m_orbiterCube);
+	SAFE_DELETE(m_orbiterCube2);
 	SAFE_DELETE(m_sponza);
 	SAFE_DELETE(m_camera);
 
