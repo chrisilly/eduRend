@@ -18,6 +18,8 @@ Non-mandatory:
 ## Lab 2: First-person Camera, Phong Shading
 
 - [ ] First-person Camera
+    - [ ] Movement relative to the camera view direction
+    - [x] Limit x-axis rotation
 - [ ] Constant Buffers
 - [ ] Phong Shading
 

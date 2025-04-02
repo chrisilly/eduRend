@@ -34,8 +34,14 @@ void Camera::RotateTo(const float& yaw, const float& pitch) noexcept
 
 void Camera::Rotate(const float& yaw, const float& pitch) noexcept
 {
-	m_yaw -= yaw;
-	m_pitch -= pitch;
+	bool lookingTooFarDown = pitch < 0 && m_pitch <= (-3.1415 / 2);
+	bool lookingTooFarUp = pitch > 0 && m_pitch >= (3.1415 / 2);
+	bool lookingTooFar = lookingTooFarDown || lookingTooFarUp;
+
+	m_yaw += yaw;
+
+	if (!lookingTooFar)
+		m_pitch += pitch;
 }
 
 mat4f Camera::WorldToViewMatrix() const noexcept
@@ -48,7 +54,7 @@ mat4f Camera::WorldToViewMatrix() const noexcept
 	// Since now there is no rotation, this matrix is simply T(-p)
 
 	//return mat4f::rotation(0, m_rotation.x, m_rotation.y) * mat4f::translation(-m_position);
-	return transpose(mat4f::rotation(0, m_yaw, m_pitch)) * mat4f::translation(-m_position);
+	return transpose(mat4f::rotation(0, -m_yaw, -m_pitch)) * mat4f::translation(-m_position);
 }
 
 mat4f Camera::ProjectionMatrix() const noexcept

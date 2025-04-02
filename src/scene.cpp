@@ -83,6 +83,8 @@ void OurTestScene::Update(
 	//m_camera->RotateY(mousedy * sensitivity);
 	#pragma endregion
 
+	// I think the X and Y are supposed to be swapped here? (yaw = Y and pitch = X). I think maybe the camera WorldToMatrix transform calculation is wrong, or my rotate methods are wrong
+	// NO! BECAUSE IT'S ABOUT *ROTATION* AROUND THE AXES, NOT MOVEMENT *IN* THE AXES. (Rotation around X-axis = movement on the Y axis, i.e. looking up and down)
 	m_camera->Rotate(input_handler.GetMouseInputX(), input_handler.GetMouseInputY());
 
 	// Now set/update object transformations
