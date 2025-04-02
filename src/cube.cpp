@@ -61,15 +61,15 @@ Cube::Cube(
 	v8.Normal = { 0, 0, -1 };
 	v8.TexCoord = { 0, 0 };
 	
-	v9.Position = { 0.5, -0.5f, -0.5 };
+	v9.Position = { -0.5, 0.5f, -0.5 };
 	v9.Normal = { 0, 0, -1 };
 	v9.TexCoord = { 0, 1 };
 
-	v10.Position = { 0.5, 0.5f, -0.5 };
+	v10.Position = { -0.5, -0.5f, -0.5 };
 	v10.Normal = { 0, 0, -1 };
 	v10.TexCoord = { 1, 1 };
 
-	v11.Position = { -0.5, 0.5f, -0.5 };
+	v11.Position = { 0.5, -0.5f, -0.5 };
 	v11.Normal = { 0, 0, -1 };
 	v11.TexCoord = { 1, 0 };
 
