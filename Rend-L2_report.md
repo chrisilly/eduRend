@@ -86,7 +86,22 @@ void Camera::Rotate(const float& yaw, const float& pitch) noexcept
 
 ## View-direction Dependent Movement
 
+Making sense of the calculations here took me hours. I was conceptually grasping the need to add the multiplication of the `ViewToWorld` matrix and the `forward view` vector (the `forward world`) to the camera's `m_position`. The trouble is, I wasn't quite sure what type each variable was meant to be or how to make the `forward world` a 3-dimensional vector so as to be able to add it to the camera's `m_position` in the first place. I ended up by sheer luck and ages of scrambling finding the `.xyz()` method which turns a `vec4f` into a 3-dimensional vector.
 
+```cpp
+void Camera::MoveForward() noexcept
+{
+	mat4f viewToWorld = mat4f::translation(m_position) * m_rotation;
+
+	vec4f viewForward = { 0, 0, -1, 0 };
+
+	vec4f worldSpaceForward = viewToWorld * viewForward;
+
+	Move(worldSpaceForward.xyz());
+}
+```
+
+After successfully making the `MoveForward()` method, I was able to make respective methods for the other three directions.
 
 # Constant Buffers
 

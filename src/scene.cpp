@@ -66,13 +66,17 @@ void OurTestScene::Update(
 {
 	// Basic camera control
 	if (input_handler.IsKeyPressed(Keys::Up) || input_handler.IsKeyPressed(Keys::W))
-		m_camera->Move({ 0.0f, 0.0f, -m_camera_velocity * dt });
+		//m_camera->Move({ 0.0f, 0.0f, -m_camera_velocity * dt });
+		m_camera->MoveForward();
 	if (input_handler.IsKeyPressed(Keys::Down) || input_handler.IsKeyPressed(Keys::S))
-		m_camera->Move({ 0.0f, 0.0f, m_camera_velocity * dt });
+		//m_camera->Move({ 0.0f, 0.0f, m_camera_velocity * dt });
+		m_camera->MoveBack();
 	if (input_handler.IsKeyPressed(Keys::Right) || input_handler.IsKeyPressed(Keys::D))
-		m_camera->Move({ m_camera_velocity * dt, 0.0f, 0.0f });
+		//m_camera->Move({ m_camera_velocity * dt, 0.0f, 0.0f });
+		m_camera->MoveRight();
 	if (input_handler.IsKeyPressed(Keys::Left) || input_handler.IsKeyPressed(Keys::A))
-		m_camera->Move({ -m_camera_velocity * dt, 0.0f, 0.0f });
+		//m_camera->Move({ -m_camera_velocity * dt, 0.0f, 0.0f });
+		m_camera->MoveLeft();
 
 	#pragma region LAB 1 CAMERA SOLUTION DEPRECATED
 	//long mousedx = input_handler.GetMouseDeltaX();
@@ -146,6 +150,7 @@ void OurTestScene::Render()
 	// Obtain the matrices needed for rendering from the camera
 	m_view_matrix = m_camera->WorldToViewMatrix();
 	m_projection_matrix = m_camera->ProjectionMatrix();
+	m_viewToWorld_matrix = m_camera->ViewToWorldMatrix();
 
 	// Load matrices + the Quad's transformation to the device and render it
 	UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);

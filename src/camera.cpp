@@ -12,17 +12,48 @@ void Camera::Move(const vec3f& direction) noexcept
 	m_position += direction;
 }
 
+void Camera::MoveForward() noexcept
+{
+	vec4f viewForward = { 0, 0, -1, 0 };
+	vec4f worldSpaceForward = ViewToWorldMatrix() * viewForward;
+
+	Move(worldSpaceForward.xyz());
+}
+
+void Camera::MoveBack() noexcept 
+{ 
+	vec4f viewBack = { 0, 0, 1, 0 };
+	vec4f worldSpaceBack = ViewToWorldMatrix() * viewBack;
+
+	Move(worldSpaceBack.xyz());
+}
+
+void Camera::MoveLeft() noexcept 
+{
+	vec4f viewLeft = { -1, 0, 0, 0 };
+	vec4f worldSpaceLeft = ViewToWorldMatrix() * viewLeft;
+
+	Move(worldSpaceLeft.xyz());
+}
+
+void Camera::MoveRight() noexcept 
+{
+	vec4f viewRight = { 1, 0, 0, 0 };
+	vec4f worldSpaceRight = ViewToWorldMatrix() * viewRight;
+
+	Move(worldSpaceRight.xyz());
+}
 
 #pragma region LAB 1 CAMERA SOLUTION DEPRECATED
-void Camera::RotateX(const float mousedx)
-{
-	m_rotation.x += mousedx;
-}
-
-void Camera::RotateY(const float mousedy)
-{
-	m_rotation.y += mousedy;
-}
+//void Camera::RotateX(const float mousedx)
+//{
+//	m_rotation.x += mousedx;
+//}
+//
+//void Camera::RotateY(const float mousedy)
+//{
+//	m_rotation.y += mousedy;
+//}
 #pragma endregion
 
 // LAB 2 SOLUTION
@@ -30,6 +61,8 @@ void Camera::RotateTo(const float& yaw, const float& pitch) noexcept
 {
 	m_yaw = yaw;
 	m_pitch = pitch;
+
+	m_rotation = mat4f::rotation(0, -m_yaw, -m_pitch);
 }
 
 void Camera::Rotate(const float& yaw, const float& pitch) noexcept
@@ -42,6 +75,8 @@ void Camera::Rotate(const float& yaw, const float& pitch) noexcept
 
 	if (!lookingTooFar)
 		m_pitch += pitch;
+
+	m_rotation = mat4f::rotation(0, -m_yaw, -m_pitch);
 }
 
 mat4f Camera::WorldToViewMatrix() const noexcept
@@ -54,7 +89,13 @@ mat4f Camera::WorldToViewMatrix() const noexcept
 	// Since now there is no rotation, this matrix is simply T(-p)
 
 	//return mat4f::rotation(0, m_rotation.x, m_rotation.y) * mat4f::translation(-m_position);
-	return transpose(mat4f::rotation(0, -m_yaw, -m_pitch)) * mat4f::translation(-m_position);
+	
+	return transpose(m_rotation) * mat4f::translation(-m_position);
+}
+
+mat4f Camera::ViewToWorldMatrix() const noexcept
+{
+	return mat4f::translation(m_position) * m_rotation;
 }
 
 mat4f Camera::ProjectionMatrix() const noexcept

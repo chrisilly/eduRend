@@ -38,6 +38,12 @@ public:
 	*/
 	void Move(const linalg::vec3f& direction) noexcept;
 
+	void MoveForward() noexcept;
+	void MoveBack() noexcept;
+	void MoveLeft() noexcept;
+	void MoveRight() noexcept;
+
+
 	/**
 	 * @brief Changes the camera aspect ratio.
 	 * @param[in] aspect_ratio New aspect ratio, calculate with width / height
@@ -50,6 +56,8 @@ public:
 	*/
 	linalg::mat4f WorldToViewMatrix() const noexcept;
 
+	linalg::mat4f ViewToWorldMatrix() const noexcept;
+
 	/**
 	 * @brief get the Matrix transforming from View space to Clip space
 	 * @return Projection matrix.
@@ -59,8 +67,8 @@ public:
 	linalg::mat4f ProjectionMatrix() const noexcept;
 
 	#pragma region LAB 1 CAMERA SOLUTION DEPRACATED
-	void RotateX(float mousedx);
-	void RotateY(float mousedy);
+	//void RotateX(float mousedx);
+	//void RotateY(float mousedy);
 	#pragma endregion
 
 	// Lab 2 solution
@@ -85,8 +93,8 @@ private:
 	float m_pitch;
 	float m_yaw;
 
-	linalg::vec3f m_rotation;
-	//linalg::mat4f m_rotation;
+	//linalg::vec3f m_rotation;
+	linalg::mat4f m_rotation;
 };
 
 #endif

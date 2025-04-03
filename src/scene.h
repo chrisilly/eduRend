@@ -99,6 +99,7 @@ class OurTestScene : public Scene
 
 	mat4f m_view_matrix;
 	mat4f m_projection_matrix;
+	mat4f m_viewToWorld_matrix;
 
 	// Misc
 	float m_angle = 0;			// A per-frame updated rotation angle (radians)...

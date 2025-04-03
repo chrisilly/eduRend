@@ -2,9 +2,9 @@
 
 By **Chris Illy Culling**
 
-2025-04-02
+2025-04-03
 
-**23%** — **| OOO————————— |**
+**36%** — **| OOOO———————— |**
 
 ## Lab 1: Cube & Camera
 
@@ -17,8 +17,8 @@ Non-mandatory:
 
 ## Lab 2: First-person Camera, Phong Shading
 
-- [ ] First-person Camera
-    - [ ] Movement relative to the camera view direction
+- [x] First-person Camera
+    - [x] Movement relative to the camera view direction
     - [x] Limit x-axis rotation
 - [ ] Constant Buffers
 - [ ] Phong Shading
