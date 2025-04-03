@@ -57,6 +57,20 @@ OBJModel::OBJModel(
 	dxdevice->CreateBuffer(&indexbufferDesc, &indexData, &m_index_buffer);
 	SETNAME(m_index_buffer, "IndexBuffer");
 
+	// Materials array descriptor
+	D3D11_BUFFER_DESC materialbufferDesc = { 0 };
+	materialbufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	materialbufferDesc.CPUAccessFlags = 0;
+	materialbufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	materialbufferDesc.MiscFlags = 0;
+	materialbufferDesc.ByteWidth = (UINT)(mesh->Materials.size() * sizeof(Material));
+	// Data resource
+	D3D11_SUBRESOURCE_DATA materialData = { 0 };
+	indexData.pSysMem = &(mesh->Materials)[0];
+	// Create material buffer on device using descriptor & data
+	dxdevice->CreateBuffer(&materialbufferDesc, &indexData, &m_material_buffer);
+	SETNAME(m_material_buffer, "MaterialBuffer");
+
 	// Copy materials from mesh
 	append_materials(mesh->Materials);
 
@@ -95,6 +109,9 @@ void OBJModel::Render() const
 
 	// Bind index buffer
 	m_dxdevice_context->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R32_UINT, 0);
+
+	// Bind material buffer
+	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 
 	// Iterate Drawcalls
 	for (auto& indexRange : m_index_ranges)

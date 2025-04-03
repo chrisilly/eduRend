@@ -108,7 +108,8 @@ After successfully making the `MoveForward()` method, I was able to make respect
 While revisiting lectures and slides on phong shading and buffers, and using the existing `TransformationBuffer` as a reference, I added in a ton of codeblocks for my new buffers:
 
 - `LightCameraBuffer`, to keep track of light and camera positions
-    - `vec4f position`
+    - `vec4f lightPosition`
+    - `vec4f cameraPosition`
 - `MaterialBuffer`, to keep track of material (phong) components needed to make calculations using the Phong Illumination Model
     - `vec4f ambient`
     - `vec4f diffuse`

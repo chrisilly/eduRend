@@ -30,6 +30,10 @@ class OBJModel : public Model
 		m_materials.insert(m_materials.end(), mtl_vec.begin(), mtl_vec.end());
 	}
 
+protected:
+
+	ID3D11Buffer* m_material_buffer = nullptr;
+
 public:
 
 	/**

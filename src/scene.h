@@ -86,7 +86,6 @@ class OurTestScene : public Scene
 	// Scene content
 	//
 	Camera* m_camera;
-	vec4f m_camera_position;
 
 	vec4f m_point_light;
 
@@ -95,8 +94,12 @@ class OurTestScene : public Scene
 	Model* m_orbiterCube;
 	Model* m_orbiterCube2;
 	Model* m_sponza;
+	Model* m_sphere;
+	Model* m_tyre;
 
 	mat4f m_sponza_transform;
+	mat4f m_sphere_transform;
+	mat4f m_tyre_transform;
 	mat4f m_quad_transform;
 	mat4f m_cube_transform;
 	mat4f m_orbiterCube_transform;

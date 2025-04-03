@@ -20,6 +20,8 @@ struct PSIn
 	float4 Pos  : SV_Position;
 	float3 Normal : NORMAL;
 	float2 TexCoord : TEX;
+    float3 PosWorld : POSITION_WORLD;
+    float3 NormalWorld : NORMAL_WORLD;
 };
 
 //-----------------------------------------------------------------------------------------
@@ -29,6 +31,9 @@ struct PSIn
 PSIn VS_main(VSIn input)
 {
 	PSIn output = (PSIn)0;
+	
+    output.PosWorld = mul((float3x3)ModelToWorldMatrix, input.Pos);
+    output.NormalWorld = mul((float3x3)ModelToWorldMatrix, input.Normal);
 	
 	// Model->View transformation
 	matrix MV = mul(WorldToViewMatrix, ModelToWorldMatrix);

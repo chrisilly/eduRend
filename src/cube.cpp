@@ -10,9 +10,9 @@ Cube::Cube(
 	std::vector<Vertex> vertices;
 	std::vector<unsigned> indices;
 
-	// Cube origin
-	//std::vector<Vertex> Origin = { 0, 0, 0 };
-	//std::vector<Vertex> Front = { 0, 0, 1 };
+	ambient = { 0.2, 0.2, 0.2, 0.0 };
+	diffuse = ambient * 2 ;
+	specular = ambient * 3;
 
 	// Populate the vertex array with 4 Vertices
 	Vertex v0, v1, v2, v3, 
@@ -256,4 +256,17 @@ void Cube::Render() const
 
 	// Make the drawcall
 	m_dxdevice_context->DrawIndexed(m_number_of_indices, 0, 0);
+}
+
+vec4f Model::GetAmbient()
+{
+	return ambient;
+}
+vec4f Model::GetDiffuse()
+{
+	return diffuse;
+}
+vec4f Model::GetSpecular()
+{
+	return specular;
 }

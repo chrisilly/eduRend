@@ -32,6 +32,10 @@ protected:
 	ID3D11Buffer* m_vertex_buffer = nullptr; //!< Pointer to gpu side vertex buffer
 	ID3D11Buffer* m_index_buffer = nullptr; //!< Pointer to gpu side index buffer
 
+	vec4f ambient;
+	vec4f diffuse;
+	vec4f specular;
+
 public:
 
 	/**
@@ -56,6 +60,10 @@ public:
 		SAFE_RELEASE(m_vertex_buffer);
 		SAFE_RELEASE(m_index_buffer);
 	}
+
+	vec4f GetAmbient();
+	vec4f GetDiffuse();
+	vec4f GetSpecular();
 };
 
 #endif
