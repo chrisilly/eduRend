@@ -39,9 +39,9 @@ float4 PS_main(PSIn input) : SV_Target
 	//Debug ??? #3
     float3 light = lightPosition.xyz - input.PosWorld;
     float3 camera = normalize(cameraPosition.xyz - input.PosWorld);
-    float3 reflectedRay = reflect(-light, input.NormalWorld);
+    float3 reflectedRay = reflect(-light, camera);
     
-    float diffuseIntensity = max(0, dot(light, input.NormalWorld));
+    float diffuseIntensity = max(0, dot(input.NormalWorld, light));
     float specularIntensity = pow(max(0, dot(reflectedRay, camera)), specular.w);
     
     normalize(light);
@@ -50,9 +50,10 @@ float4 PS_main(PSIn input) : SV_Target
     normalize(input.NormalWorld);
 
     //return float4(cameraPosition);
+    return float4(ambient + diffuse * diffuseIntensity + specular * specularIntensity);
     //return float4(ambient + diffuse * diffuseIntensity + specular * specularIntensity);
     //return float4(ambient.xyz + diffuse.xyz * (lightPosition.xyz * -cameraNormal) + specular.xyz * pow(reflectedRay * cameraNormal, 5), 1);
     //return float4(ambient + diffuse * dot(light, input.NormalWorld) + specular * dot(reflectedRay, camera));
-    return float4(ambient + max(diffuse * dot(light, input.NormalWorld), 0) + max(specular * pow(dot(reflectedRay, camera), 5), 0));
+    //return float4(ambient + max(diffuse * dot(light, input.NormalWorld), 0) + max(specular * pow(dot(reflectedRay, camera), 5), 0));
     //return float4(diffuse);
 }
