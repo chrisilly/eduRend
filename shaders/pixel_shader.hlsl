@@ -1,6 +1,19 @@
 
 Texture2D texDiffuse : register(t0);
 
+cbuffer LightCamBuffer : register(b0)
+{
+    float4 lightPosition;
+    float4 cameraPosition;
+};
+
+cbuffer MaterialBuffer : register(b1)
+{
+    float4 ambient;
+    float4 diffuse;
+    float4 specular;
+};
+
 struct PSIn
 {
 	float4 Pos  : SV_Position;

@@ -102,3 +102,8 @@ mat4f Camera::ProjectionMatrix() const noexcept
 {
 	return mat4f::projection(m_vertical_fov, m_aspect_ratio, m_near_plane, m_far_plane);
 }
+
+vec3f Camera::GetPosition()
+{
+	return m_position;
+}

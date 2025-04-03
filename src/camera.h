@@ -66,6 +66,8 @@ public:
 	*/
 	linalg::mat4f ProjectionMatrix() const noexcept;
 
+	linalg::vec3f GetPosition();
+
 	#pragma region LAB 1 CAMERA SOLUTION DEPRACATED
 	//void RotateX(float mousedx);
 	//void RotateY(float mousedy);

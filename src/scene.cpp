@@ -32,6 +32,11 @@ OurTestScene::OurTestScene(
 { 
 	InitTransformationBuffer();
 	// + init other CBuffers
+	InitLightCameraBuffer();
+	InitMaterialBuffer();
+
+	// Initialize point light
+	m_point_light = { 0, 3, -3, 0 };
 }
 
 //
@@ -146,11 +151,16 @@ void OurTestScene::Render()
 {
 	// Bind transformation_buffer to slot b0 of the VS
 	m_dxdevice_context->VSSetConstantBuffers(0, 1, &m_transformation_buffer);
+	m_dxdevice_context->PSSetConstantBuffers(0, 1, &m_light_camera_buffer);
+	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
 
 	// Obtain the matrices needed for rendering from the camera
 	m_view_matrix = m_camera->WorldToViewMatrix();
 	m_projection_matrix = m_camera->ProjectionMatrix();
 	m_viewToWorld_matrix = m_camera->ViewToWorldMatrix();
+
+	//UpdateLightCameraBuffer(m_point_light, m_camera->GetPosition().xyz0());
+	//UpdateMaterialBuffer({ 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 });
 
 	// Load matrices + the Quad's transformation to the device and render it
 	UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
@@ -168,6 +178,7 @@ void OurTestScene::Render()
 	// Load matrices + Sponza's transformation to the device and render it
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
 	m_sponza->Render();
+
 }
 
 void OurTestScene::Release()
@@ -181,6 +192,8 @@ void OurTestScene::Release()
 
 	SAFE_RELEASE(m_transformation_buffer);
 	// + release other CBuffers
+	SAFE_RELEASE(m_light_camera_buffer);
+	SAFE_RELEASE(m_material_buffer);
 }
 
 void OurTestScene::OnWindowResized(
@@ -206,6 +219,32 @@ void OurTestScene::InitTransformationBuffer()
 	ASSERT(hr = m_dxdevice->CreateBuffer(&matrixBufferDesc, nullptr, &m_transformation_buffer));
 }
 
+void OurTestScene::InitLightCameraBuffer()
+{
+	HRESULT hr;
+	D3D11_BUFFER_DESC lightCameraBuffer = { 0 };
+	lightCameraBuffer.Usage = D3D11_USAGE_DYNAMIC;
+	lightCameraBuffer.ByteWidth = sizeof(LightCamBuffer);
+	lightCameraBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	lightCameraBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	lightCameraBuffer.MiscFlags = 0;
+	lightCameraBuffer.StructureByteStride = 0;
+	ASSERT(hr = m_dxdevice->CreateBuffer(&lightCameraBuffer, nullptr, &m_light_camera_buffer));
+}
+
+void OurTestScene::InitMaterialBuffer()
+{
+	HRESULT hr;
+	D3D11_BUFFER_DESC materialBuffer = { 0 };
+	materialBuffer.Usage = D3D11_USAGE_DYNAMIC;
+	materialBuffer.ByteWidth = sizeof(MaterialBuffer);
+	materialBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	materialBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	materialBuffer.MiscFlags = 0;
+	materialBuffer.StructureByteStride = 0;
+	ASSERT(hr = m_dxdevice->CreateBuffer(&materialBuffer, nullptr, &m_material_buffer));
+}
+
 void OurTestScene::UpdateTransformationBuffer(
 	mat4f ModelToWorldMatrix,
 	mat4f WorldToViewMatrix,
@@ -219,4 +258,30 @@ void OurTestScene::UpdateTransformationBuffer(
 	matrixBuffer->WorldToViewMatrix = WorldToViewMatrix;
 	matrixBuffer->ProjectionMatrix = ProjectionMatrix;
 	m_dxdevice_context->Unmap(m_transformation_buffer, 0);
+}
+
+void OurTestScene::UpdateLightCameraBuffer(
+	vec4f lightPosition, 
+	vec4f cameraPosition)
+{
+	D3D11_MAPPED_SUBRESOURCE resource;
+	m_dxdevice_context->Map(m_light_camera_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+	LightCamBuffer* lightCameraBuffer = (LightCamBuffer*)resource.pData;
+	lightCameraBuffer->light_position = lightPosition;
+	lightCameraBuffer->camera_position = cameraPosition;
+	m_dxdevice_context->Unmap(m_light_camera_buffer, 0);
+}
+
+void OurTestScene::UpdateMaterialBuffer(
+	vec4f ambient,
+	vec4f diffuse,
+	vec4f specular)
+{
+	D3D11_MAPPED_SUBRESOURCE resource;
+	m_dxdevice_context->Map(m_material_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+	MaterialBuffer* materialBuffer = (MaterialBuffer*)resource.pData;
+	materialBuffer->ambient = ambient;
+	materialBuffer->diffuse = diffuse;
+	materialBuffer->specular = specular;
+	m_dxdevice_context->Unmap(m_material_buffer, 0);
 }

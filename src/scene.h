@@ -79,11 +79,16 @@ class OurTestScene : public Scene
 	// CBuffer for transformation matrices
 	ID3D11Buffer* m_transformation_buffer = nullptr;
 	// + other CBuffers
+	ID3D11Buffer* m_light_camera_buffer = nullptr;
+	ID3D11Buffer* m_material_buffer = nullptr;
 
 	//
 	// Scene content
 	//
 	Camera* m_camera;
+	vec4f m_camera_position;
+
+	vec4f m_point_light;
 
 	Model* m_quad;
 	Model* m_cube;
@@ -108,8 +113,13 @@ class OurTestScene : public Scene
 	float m_fps_cooldown = 0;
 
 	void InitTransformationBuffer();
+	void InitLightCameraBuffer();
+	void InitMaterialBuffer();
 
 	void UpdateTransformationBuffer(mat4f model_to_world_matrix, mat4f world_to_view_matrix, mat4f projection_matrix);
+	void UpdateLightCameraBuffer(vec4f light_position, vec4f camera_position);
+	void UpdateMaterialBuffer(vec4f ambient, vec4f diffuse, vec4f specular);
+
 
 public:
 	/**
