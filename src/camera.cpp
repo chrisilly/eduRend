@@ -17,7 +17,7 @@ void Camera::MoveForward() noexcept
 	vec4f viewForward = { 0, 0, -1, 0 };
 	vec4f worldSpaceForward = ViewToWorldMatrix() * viewForward;
 
-	Move(worldSpaceForward.xyz());
+	Move(worldSpaceForward.xyz() * 0.1f);
 }
 
 void Camera::MoveBack() noexcept 
@@ -25,7 +25,7 @@ void Camera::MoveBack() noexcept
 	vec4f viewBack = { 0, 0, 1, 0 };
 	vec4f worldSpaceBack = ViewToWorldMatrix() * viewBack;
 
-	Move(worldSpaceBack.xyz());
+	Move(worldSpaceBack.xyz() * 0.1f);
 }
 
 void Camera::MoveLeft() noexcept 
@@ -33,7 +33,7 @@ void Camera::MoveLeft() noexcept
 	vec4f viewLeft = { -1, 0, 0, 0 };
 	vec4f worldSpaceLeft = ViewToWorldMatrix() * viewLeft;
 
-	Move(worldSpaceLeft.xyz());
+	Move(worldSpaceLeft.xyz() * 0.1f);
 }
 
 void Camera::MoveRight() noexcept 
@@ -41,7 +41,7 @@ void Camera::MoveRight() noexcept
 	vec4f viewRight = { 1, 0, 0, 0 };
 	vec4f worldSpaceRight = ViewToWorldMatrix() * viewRight;
 
-	Move(worldSpaceRight.xyz());
+	Move(worldSpaceRight.xyz() * 0.1f);
 }
 
 #pragma region LAB 1 CAMERA SOLUTION DEPRECATED

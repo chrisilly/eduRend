@@ -70,18 +70,28 @@ void OurTestScene::Update(
 	const InputHandler& input_handler)
 {
 	// Basic camera control
-	if (input_handler.IsKeyPressed(Keys::Up) || input_handler.IsKeyPressed(Keys::W))
+	if (input_handler.IsKeyPressed(Keys::W))
 		//m_camera->Move({ 0.0f, 0.0f, -m_camera_velocity * dt });
 		m_camera->MoveForward();
-	if (input_handler.IsKeyPressed(Keys::Down) || input_handler.IsKeyPressed(Keys::S))
+	if (input_handler.IsKeyPressed(Keys::S))
 		//m_camera->Move({ 0.0f, 0.0f, m_camera_velocity * dt });
 		m_camera->MoveBack();
-	if (input_handler.IsKeyPressed(Keys::Right) || input_handler.IsKeyPressed(Keys::D))
+	if (input_handler.IsKeyPressed(Keys::D))
 		//m_camera->Move({ m_camera_velocity * dt, 0.0f, 0.0f });
 		m_camera->MoveRight();
-	if (input_handler.IsKeyPressed(Keys::Left) || input_handler.IsKeyPressed(Keys::A))
+	if (input_handler.IsKeyPressed(Keys::A))
 		//m_camera->Move({ -m_camera_velocity * dt, 0.0f, 0.0f });
 		m_camera->MoveLeft();
+	if (input_handler.IsKeyPressed(Keys::Up))
+		MoveLight({ 0.0f, m_camera_velocity * dt, 0.0f, 0 });
+	if(input_handler.IsKeyPressed(Keys::Down))
+		MoveLight({ 0.0f, -m_camera_velocity * dt, 0.0f, 0 });
+	if(input_handler.IsKeyPressed(Keys::Right))
+		MoveLight({ 0.0f, 0.0f, -m_camera_velocity * dt, 0 });
+	if(input_handler.IsKeyPressed(Keys::Left))
+		MoveLight({ 0.0f, 0.0f, m_camera_velocity * dt, 0 });
+
+	std::cout << "light position: " << m_point_light << std::endl;
 
 	#pragma region LAB 1 CAMERA SOLUTION DEPRECATED
 	//long mousedx = input_handler.GetMouseDeltaX();
@@ -159,8 +169,8 @@ void OurTestScene::Render()
 	m_projection_matrix = m_camera->ProjectionMatrix();
 	m_viewToWorld_matrix = m_camera->ViewToWorldMatrix();
 
-	//UpdateLightCameraBuffer(m_point_light, m_camera->GetPosition().xyz0());
-	//UpdateMaterialBuffer({ 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 });
+	UpdateLightCameraBuffer(m_point_light, m_camera->GetPosition().xyz0());
+	//UpdateMaterialBuffer();
 
 	// Load matrices + the Quad's transformation to the device and render it
 	UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
@@ -222,6 +232,11 @@ void OurTestScene::InitTransformationBuffer()
 void OurTestScene::InitLightCameraBuffer()
 {
 	HRESULT hr;
+
+	LightCamBuffer lightCameraBufferData;
+	lightCameraBufferData.camera_position = 0.0f;
+	lightCameraBufferData.light_position = m_point_light;
+
 	D3D11_BUFFER_DESC lightCameraBuffer = { 0 };
 	lightCameraBuffer.Usage = D3D11_USAGE_DYNAMIC;
 	lightCameraBuffer.ByteWidth = sizeof(LightCamBuffer);
@@ -229,20 +244,41 @@ void OurTestScene::InitLightCameraBuffer()
 	lightCameraBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	lightCameraBuffer.MiscFlags = 0;
 	lightCameraBuffer.StructureByteStride = 0;
-	ASSERT(hr = m_dxdevice->CreateBuffer(&lightCameraBuffer, nullptr, &m_light_camera_buffer));
+
+	D3D11_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem = &lightCameraBufferData;
+	InitData.SysMemPitch = 0;
+	InitData.SysMemSlicePitch = 0;
+
+	ASSERT(hr = m_dxdevice->CreateBuffer(&lightCameraBuffer, &InitData, &m_light_camera_buffer));
 }
 
 void OurTestScene::InitMaterialBuffer()
 {
 	HRESULT hr;
+
+	MaterialBuffer materialBufferData;
+	//materialBufferData.ambient = { 0.05, 0.168, 0.082, 1 };
+	materialBufferData.ambient = { 0, 0, 0, 1 }; //black
+	materialBufferData.diffuse = {0.168, 0.05, 0.05, 1}; // red
+	//materialBufferData.diffuse = {0.05, 0.168, 0.082, 1}; // green
+	//materialBufferData.diffuse = {0.05, 0.05, 0.168, 1}; // blue
+	materialBufferData.specular = 0.05f;
+
 	D3D11_BUFFER_DESC materialBuffer = { 0 };
-	materialBuffer.Usage = D3D11_USAGE_DYNAMIC;
 	materialBuffer.ByteWidth = sizeof(MaterialBuffer);
+	materialBuffer.Usage = D3D11_USAGE_DYNAMIC;
 	materialBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	materialBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	materialBuffer.MiscFlags = 0;
 	materialBuffer.StructureByteStride = 0;
-	ASSERT(hr = m_dxdevice->CreateBuffer(&materialBuffer, nullptr, &m_material_buffer));
+
+	D3D11_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem = &materialBufferData;
+	InitData.SysMemPitch = 0;
+	InitData.SysMemSlicePitch = 0;
+
+	ASSERT(hr = m_dxdevice->CreateBuffer(&materialBuffer, &InitData, &m_material_buffer));
 }
 
 void OurTestScene::UpdateTransformationBuffer(
@@ -284,4 +320,9 @@ void OurTestScene::UpdateMaterialBuffer(
 	materialBuffer->diffuse = diffuse;
 	materialBuffer->specular = specular;
 	m_dxdevice_context->Unmap(m_material_buffer, 0);
+}
+
+void OurTestScene::MoveLight(const vec4f& direction) noexcept
+{
+	m_point_light += direction;
 }

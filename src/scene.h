@@ -159,6 +159,8 @@ public:
 	 * @param window_height New height
 	*/
 	void OnWindowResized(int window_width, int window_height) override;
+
+	void MoveLight(const vec4f& direction) noexcept;
 };
 
 #endif
