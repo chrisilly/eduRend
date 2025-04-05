@@ -90,6 +90,7 @@ class OurTestScene : public Scene
 
 	vec4f m_point_light;
 
+	Model* m_lightCube;
 	Model* m_quad;
 	Model* m_cube;
 	Model* m_orbiterCube;
@@ -101,6 +102,7 @@ class OurTestScene : public Scene
 	mat4f m_cube_transform;
 	mat4f m_orbiterCube_transform;
 	mat4f m_orbiterCube2_transform;
+	mat4f m_lightCube_transform;
 
 	mat4f m_view_matrix;
 	mat4f m_projection_matrix;
@@ -108,7 +110,7 @@ class OurTestScene : public Scene
 
 	// Misc
 	float m_angle = 0;			// A per-frame updated rotation angle (radians)...
-	float m_angular_velocity = fPI / 2;	// ...and its velocity (radians/sec)
+	float m_angular_velocity = fPI;	// ...and its velocity (radians/sec)
 	float m_camera_velocity = 5.0f;	// Camera movement velocity in units/s
 	float m_fps_cooldown = 0;
 

@@ -219,6 +219,11 @@ void OurTestScene::InitTransformationBuffer()
 void OurTestScene::InitLightCameraBuffer()
 {
 	HRESULT hr;
+
+	LightCamBuffer lightCameraBufferData;
+	lightCameraBufferData.camera_position = 0.0f;
+	lightCameraBufferData.light_position = m_point_light;
+
 	D3D11_BUFFER_DESC lightCameraBuffer = { 0 };
 	lightCameraBuffer.Usage = D3D11_USAGE_DYNAMIC;
 	lightCameraBuffer.ByteWidth = sizeof(LightCamBuffer);
@@ -226,20 +231,47 @@ void OurTestScene::InitLightCameraBuffer()
 	lightCameraBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	lightCameraBuffer.MiscFlags = 0;
 	lightCameraBuffer.StructureByteStride = 0;
-	ASSERT(hr = m_dxdevice->CreateBuffer(&lightCameraBuffer, nullptr, &m_light_camera_buffer));
+
+	D3D11_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem = &lightCameraBufferData;
+	InitData.SysMemPitch = 0;
+	InitData.SysMemSlicePitch = 0;
+
+	ASSERT(hr = m_dxdevice->CreateBuffer(&lightCameraBuffer, &InitData, &m_light_camera_buffer));
 }
 
 void OurTestScene::InitMaterialBuffer()
 {
 	HRESULT hr;
+
+	// Let's set our default data to start
+	MaterialBuffer materialBufferData;
+	//materialBufferData.ambient = { 0, 0, 0, 1 }; //black
+	materialBufferData.ambient = { 0.1960784314, 0.0, 0.0, 0 }; // dark red
+	//materialBufferData.ambient = { 0.05, 0.168, 0.082, 1 }; //green
+	//materialBufferData.diffuse = { 0.168, 0.050, 0.050, 0 }; // red
+	materialBufferData.diffuse = { 1, 0, 0, 0 }; // red
+	//materialBufferData.diffuse = {0.05, 0.168, 0.082, 1}; // green
+	//materialBufferData.diffuse = {0.05, 0.05, 0.168, 1}; // blue
+	//materialBufferData.specular = 0.05f;
+	//materialBufferData.specular = { 1, 0, 0, 0 }; // red
+	materialBufferData.specular = {1, 0.3921568627, 0.3921568627, 0.05}; // pastel red
+
+	// Buffer description
 	D3D11_BUFFER_DESC materialBuffer = { 0 };
-	materialBuffer.Usage = D3D11_USAGE_DYNAMIC;
 	materialBuffer.ByteWidth = sizeof(MaterialBuffer);
+	materialBuffer.Usage = D3D11_USAGE_DYNAMIC;
 	materialBuffer.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	materialBuffer.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	materialBuffer.MiscFlags = 0;
 	materialBuffer.StructureByteStride = 0;
-	ASSERT(hr = m_dxdevice->CreateBuffer(&materialBuffer, nullptr, &m_material_buffer));
+
+	D3D11_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem = &materialBufferData;
+	InitData.SysMemPitch = 0;
+	InitData.SysMemSlicePitch = 0;
+
+	ASSERT(hr = m_dxdevice->CreateBuffer(&materialBuffer, &InitData, &m_material_buffer));
 }
 ```
 
@@ -288,4 +320,14 @@ void OurTestScene::UpdateMaterialBuffer(
 }
 ```
 
-...
+I'm having an issue where things look totally correct when looking in the same direction of the light, but really weird when looking the opposite way. Also, the farther away an object is from the light, the more insense its highlight becomes. Weird
+
+**Looking away from the point light:**
+
+*(point light is behind the camera)*
+
+![alt text](images/lookingAwayFromPointLight.png)
+
+**Looking toward the point light from afar:**
+
+![alt text](images/lookingAtPointLight.png)

@@ -59,6 +59,7 @@ void OurTestScene::Init()
 	m_orbiterCube = new Cube(m_dxdevice, m_dxdevice_context);
 	m_orbiterCube2 = new Cube(m_dxdevice, m_dxdevice_context);
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
+	m_lightCube = new Cube(m_dxdevice, m_dxdevice_context);
 }
 
 //
@@ -111,6 +112,9 @@ void OurTestScene::Update(
 	// but the T*R*S order is most common; i.e. scale, then rotate, and then translate.
 	// If no transformation is desired, an identity matrix can be obtained 
 	// via e.g. Mquad = linalg::mat4f_identity; 
+
+	m_lightCube_transform = mat4f::translation(m_point_light.x, m_point_light.y, m_point_light.z) *
+		mat4f::scaling(0.3, 0.3, 0.3);
 
 	// Quad model-to-world transformation
 	m_quad_transform = mat4f::translation(0, 0, 0) *			// No translation
@@ -171,6 +175,10 @@ void OurTestScene::Render()
 
 	UpdateLightCameraBuffer(m_point_light, m_camera->GetPosition().xyz0());
 	//UpdateMaterialBuffer();
+
+	m_lightCube_transform.translation(m_point_light.x, m_point_light.y, m_point_light.z);
+	UpdateTransformationBuffer(m_lightCube_transform, m_view_matrix, m_projection_matrix);
+	m_lightCube->Render();
 
 	// Load matrices + the Quad's transformation to the device and render it
 	UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
@@ -257,13 +265,18 @@ void OurTestScene::InitMaterialBuffer()
 {
 	HRESULT hr;
 
+	// Let's set our default data to start
 	MaterialBuffer materialBufferData;
-	//materialBufferData.ambient = { 0.05, 0.168, 0.082, 1 };
-	materialBufferData.ambient = { 0, 0, 0, 1 }; //black
-	materialBufferData.diffuse = {0.168, 0.05, 0.05, 1}; // red
+	//materialBufferData.ambient = { 0, 0, 0, 1 }; //black
+	materialBufferData.ambient = { 0.1960784314, 0.0, 0.0, 0 }; // dark red
+	//materialBufferData.ambient = { 0.05, 0.168, 0.082, 1 }; //green
+	//materialBufferData.diffuse = { 0.168, 0.050, 0.050, 0 }; // red
+	materialBufferData.diffuse = { 1, 0, 0, 0 }; // red
 	//materialBufferData.diffuse = {0.05, 0.168, 0.082, 1}; // green
 	//materialBufferData.diffuse = {0.05, 0.05, 0.168, 1}; // blue
-	materialBufferData.specular = 0.05f;
+	//materialBufferData.specular = 0.05f;
+	//materialBufferData.specular = { 1, 0, 0, 0 }; // red
+	materialBufferData.specular = {1, 0.3921568627, 0.3921568627, 0.05}; // pastel red
 
 	D3D11_BUFFER_DESC materialBuffer = { 0 };
 	materialBuffer.ByteWidth = sizeof(MaterialBuffer);
