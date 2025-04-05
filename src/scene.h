@@ -96,8 +96,10 @@ class OurTestScene : public Scene
 	Model* m_orbiterCube;
 	Model* m_orbiterCube2;
 	Model* m_sponza;
+	Model* m_sphere;
 
 	mat4f m_sponza_transform;
+	mat4f m_sphere_transform;
 	mat4f m_quad_transform;
 	mat4f m_cube_transform;
 	mat4f m_orbiterCube_transform;

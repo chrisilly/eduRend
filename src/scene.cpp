@@ -59,6 +59,7 @@ void OurTestScene::Init()
 	m_orbiterCube = new Cube(m_dxdevice, m_dxdevice_context);
 	m_orbiterCube2 = new Cube(m_dxdevice, m_dxdevice_context);
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
+	m_sphere = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
 	m_lightCube = new Cube(m_dxdevice, m_dxdevice_context);
 }
 
@@ -145,6 +146,9 @@ void OurTestScene::Update(
 		mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * // Rotate pi/2 radians (90 degrees) around y
 		mat4f::scaling(0.05f);						 // The scene is quite large so scale it down to 5%
 
+	m_sphere_transform = mat4f::translation(0, 5, 0) *
+		mat4f::scaling(3.0f);
+
 	// Increment the rotation angle.
 	m_angle += m_angular_velocity * dt;
 
@@ -197,6 +201,8 @@ void OurTestScene::Render()
 	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
 	m_sponza->Render();
 
+	UpdateTransformationBuffer(m_sphere_transform, m_view_matrix, m_projection_matrix);
+	m_sphere->Render();
 }
 
 void OurTestScene::Release()
