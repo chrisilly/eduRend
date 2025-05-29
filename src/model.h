@@ -35,13 +35,18 @@ protected:
 public:
 
 	Transform transform = Transform();
+	Material material = Material();
+
 	/**
 	 * @brief Sets the protected member variables to the input params.
 	 * @param dxdevice ID3D11Device to be used in the model.
 	 * @param dxdevice_context ID3D11DeviceContext to be used in the model.
 	*/
-	Model(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context) 
+	Model(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context)
 		:	m_dxdevice(dxdevice), m_dxdevice_context(dxdevice_context) { }
+	
+	Model(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context, Material material, Transform transform)
+		: m_dxdevice(dxdevice), m_dxdevice_context(dxdevice_context), material(material), transform(transform) {}
 
 	/**
 	 * @brief Abstract render method: must be implemented by derived classes

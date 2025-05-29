@@ -3,8 +3,9 @@
 OBJModel::OBJModel(
 	const std::string& objfile,
 	ID3D11Device* dxdevice,
-	ID3D11DeviceContext* dxdevice_context)
-	: Model(dxdevice, dxdevice_context)
+	ID3D11DeviceContext* dxdevice_context, 
+	Material material, Transform transform)
+	: Model(dxdevice, dxdevice_context, material, transform)
 {
 	// Load the OBJ
 	OBJLoader* mesh = new OBJLoader();

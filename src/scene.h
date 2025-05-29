@@ -65,6 +65,7 @@ protected:
 	ID3D11DeviceContext*	m_dxdevice_context; //!< Graphics context, use for binding resources and draw commands.
 	int						m_window_width; //!< Current width of the window.
 	int						m_window_height; //!< Current height of the window.
+	std::list<Model*>		models;
 };
 
 /**
@@ -97,9 +98,8 @@ class OurTestScene : public Scene
 	Model* m_orbiterCube2;
 	Model* m_sponza;
 	Model* m_sphere;
+	Model* m_sphere2;
 
-	mat4f m_sponza_transform;
-	mat4f m_sphere_transform;
 	mat4f m_quad_transform;
 	mat4f m_cube_transform;
 	mat4f m_orbiterCube_transform;

@@ -48,9 +48,10 @@ public:
 */
 struct Material
 {
-	vec3f AmbientColour		= { 0.0f, 0.5f, 0.0f }; //!< Ambient colour component
-	vec3f DiffuseColour		= { 0.0f, 0.5f, 0.0f }; //!< Diffuse colour component
-	vec3f SpecularColour	= { 1.0f, 1.0f, 1.0f }; //!< Specular colour component
+	vec3f AmbientColour; //!< Ambient colour component
+	vec3f DiffuseColour; //!< Diffuse colour component
+	vec3f SpecularColour; //!< Specular colour component
+	float shininess;
     
 	std::string Name; //!< Name of the Material
 
@@ -63,6 +64,10 @@ struct Material
 	// Device textures
 	Texture DiffuseTexture; //!< Diffuse Texture
 	// + other texture types
+
+public:
+	Material(vec3f ambientColour = { 0.0f, 0.5f, 0.0f }, vec3f diffuseColour = { 0.0f, 0.5f, 0.0f }, vec3f specularColour = { 1.0f, 1.0f, 1.0f }, float shininess = 0.05f) 
+		: AmbientColour(ambientColour), DiffuseColour(diffuseColour), SpecularColour(specularColour), shininess(shininess) {}
 };
 
 /**

@@ -1,4 +1,4 @@
-
+#include <string>
 #include "Scene.h"
 #include "QuadModel.h"
 #include "cube.h"
@@ -58,9 +58,17 @@ void OurTestScene::Init()
 	m_cube = new Cube(m_dxdevice, m_dxdevice_context);
 	m_orbiterCube = new Cube(m_dxdevice, m_dxdevice_context);
 	m_orbiterCube2 = new Cube(m_dxdevice, m_dxdevice_context);
-	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context);
-	m_sphere = new OBJModel("assets/sphere/sphere.obj", m_dxdevice, m_dxdevice_context);
+
+	// Sponza model-to-world transformation
+	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context, Material(), Transform(mat4f::translation(0, -5, 0), mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f), mat4f::scaling(0.05f)));
+
+	const std::string spherePath = "assets/sphere/sphere.obj";
+	m_sphere = new OBJModel(spherePath, m_dxdevice, m_dxdevice_context, Material(), Transform());
+	m_sphere2 = new OBJModel(spherePath, m_dxdevice, m_dxdevice_context, Material(), Transform(mat4f::translation(0, 5, 0), mat4f::rotation(0, 0, 0), mat4f::scaling(0.5f)));
+
 	m_lightCube = new Cube(m_dxdevice, m_dxdevice_context);
+
+	models = { m_sponza, m_sphere, m_sphere2 };	
 }
 
 //
@@ -141,14 +149,6 @@ void OurTestScene::Update(
 	// nvm, the camera doesn't have a transform, wtf??
 	// I was gonna make the camera a child of m_orbiterCube2 and make it go weeeeee
 
-	// Sponza model-to-world transformation
-	m_sponza_transform = mat4f::translation(0, -5, 0) *		 // Move down 5 units
-		mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f) * // Rotate pi/2 radians (90 degrees) around y
-		mat4f::scaling(0.05f);						 // The scene is quite large so scale it down to 5%
-
-	m_sphere_transform = mat4f::translation(0, 5, 0) *
-		mat4f::scaling(3.0f);
-
 	// Increment the rotation angle.
 	m_angle += m_angular_velocity * dt;
 
@@ -178,7 +178,7 @@ void OurTestScene::Render()
 	m_viewToWorld_matrix = m_camera->ViewToWorldMatrix();
 
 	UpdateLightCameraBuffer(m_point_light, m_camera->GetPosition().xyz0());
-	//UpdateMaterialBuffer();
+	UpdateMaterialBuffer({ 1, 0.3921568627, 0.3921568627, 0.05 }, { 1, 0, 0, 0 }, { 1, 0.3921568627, 0.3921568627, 0.05 });
 
 	m_lightCube_transform.translation(m_point_light.x, m_point_light.y, m_point_light.z);
 	UpdateTransformationBuffer(m_lightCube_transform, m_view_matrix, m_projection_matrix);
@@ -198,12 +198,21 @@ void OurTestScene::Render()
 	m_orbiterCube2->Render();
 
 	// Load matrices + Sponza's transformation to the device and render it
-	UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
-	m_sponza->Render();
+	//UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
+	//m_sponza->Render();
 
-	UpdateTransformationBuffer(m_sphere_transform, m_view_matrix, m_projection_matrix);
-	UpdateTransformationBuffer(m_sphere->transform.TRS, m_view_matrix, m_projection_matrix);
-	m_sphere->Render();
+	//UpdateTransformationBuffer(m_sphere->transform.TRS, m_view_matrix, m_projection_matrix);
+	//m_sphere->Render();
+
+	for (auto& model : models)
+	{
+		vec4f modelAmbient =	{ model->material.AmbientColour.x, model->material.AmbientColour.y, model->material.AmbientColour.z, 0 };
+		vec4f modelDiffuse =	{ model->material.DiffuseColour.x, model->material.DiffuseColour.y, model->material.DiffuseColour.z, 0 };
+		vec4f modelSpecular =	{ model->material.SpecularColour.x, model->material.SpecularColour.y, model->material.SpecularColour.z, 0.05 };
+		UpdateTransformationBuffer(model->transform.TRS, m_view_matrix, m_projection_matrix);
+		UpdateMaterialBuffer(modelAmbient, modelDiffuse, modelSpecular);
+		model->Render();
+	}
 }
 
 void OurTestScene::Release()
@@ -214,6 +223,8 @@ void OurTestScene::Release()
 	SAFE_DELETE(m_orbiterCube2);
 	SAFE_DELETE(m_sponza);
 	SAFE_DELETE(m_camera);
+	SAFE_DELETE(m_sphere);
+	SAFE_DELETE(m_sphere2);
 
 	SAFE_RELEASE(m_transformation_buffer);
 	// + release other CBuffers
