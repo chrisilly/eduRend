@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include "stdafx.h"
 #include "vec/vec.h"
+#include "vec/mat.h"
 
 #include "Texture.h"
 
@@ -28,6 +29,18 @@ struct Vertex
 	vec3f Tangent; //!< Tangent of the vertex
 	vec3f Binormal; //!< Binormal of the vertex
 	vec2f TexCoord; //!< 2D texture coordiante of the vertex
+};
+
+struct Transform
+{
+	mat4f TRS;
+	mat4f translation;
+	mat4f rotation;
+	mat4f scaling;
+
+public:
+	Transform(mat4f translation = mat4f::translation(0, 0, 0), mat4f rotation = mat4f::rotation(0, 0, 0), mat4f scaling = mat4f::scaling(1.0f)) 
+		: translation(translation), rotation(rotation), scaling(scaling), TRS(translation * rotation * scaling) {}
 };
 
 /**

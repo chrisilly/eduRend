@@ -202,6 +202,7 @@ void OurTestScene::Render()
 	m_sponza->Render();
 
 	UpdateTransformationBuffer(m_sphere_transform, m_view_matrix, m_projection_matrix);
+	UpdateTransformationBuffer(m_sphere->transform.TRS, m_view_matrix, m_projection_matrix);
 	m_sphere->Render();
 }
 

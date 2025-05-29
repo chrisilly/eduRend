@@ -34,6 +34,7 @@ protected:
 
 public:
 
+	Transform transform = Transform();
 	/**
 	 * @brief Sets the protected member variables to the input params.
 	 * @param dxdevice ID3D11Device to be used in the model.
