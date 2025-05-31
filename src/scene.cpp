@@ -60,7 +60,7 @@ void OurTestScene::Init()
 	m_orbiterCube2 = new Cube(m_dxdevice, m_dxdevice_context);
 
 	// Sponza model-to-world transformation
-	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context, Material(), Transform(mat4f::translation(0, -5, 0), mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f), mat4f::scaling(0.05f)));
+	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context, PastelRedMaterial, Transform(mat4f::translation(0, -5, 0), mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f), mat4f::scaling(0.05f)));
 
 	const std::string spherePath = "assets/sphere/sphere.obj";
 	m_sphere = new OBJModel(spherePath, m_dxdevice, m_dxdevice_context, Material(), Transform());
@@ -178,7 +178,7 @@ void OurTestScene::Render()
 	m_viewToWorld_matrix = m_camera->ViewToWorldMatrix();
 
 	UpdateLightCameraBuffer(m_point_light, m_camera->GetPosition().xyz0());
-	UpdateMaterialBuffer({ 1, 0.3921568627, 0.3921568627, 0.05 }, { 1, 0, 0, 0 }, { 1, 0.3921568627, 0.3921568627, 0.05 });
+	UpdateMaterialBuffer(PastelRedMaterial);
 
 	m_lightCube_transform.translation(m_point_light.x, m_point_light.y, m_point_light.z);
 	UpdateTransformationBuffer(m_lightCube_transform, m_view_matrix, m_projection_matrix);
@@ -210,7 +210,7 @@ void OurTestScene::Render()
 		vec4f modelDiffuse =	{ model->material.DiffuseColour.x, model->material.DiffuseColour.y, model->material.DiffuseColour.z, 0 };
 		vec4f modelSpecular =	{ model->material.SpecularColour.x, model->material.SpecularColour.y, model->material.SpecularColour.z, 0.05 };
 		UpdateTransformationBuffer(model->transform.TRS, m_view_matrix, m_projection_matrix);
-		UpdateMaterialBuffer(modelAmbient, modelDiffuse, modelSpecular);
+		UpdateMaterialBuffer(model->material);
 		model->Render();
 	}
 }
@@ -285,16 +285,10 @@ void OurTestScene::InitMaterialBuffer()
 
 	// Let's set our default data to start
 	MaterialBuffer materialBufferData;
-	//materialBufferData.ambient = { 0, 0, 0, 1 }; //black
-	materialBufferData.ambient = { 0.1960784314, 0.0, 0.0, 0 }; // dark red
-	//materialBufferData.ambient = { 0.05, 0.168, 0.082, 1 }; //green
-	//materialBufferData.diffuse = { 0.168, 0.050, 0.050, 0 }; // red
-	materialBufferData.diffuse = { 1, 0, 0, 0 }; // red
-	//materialBufferData.diffuse = {0.05, 0.168, 0.082, 1}; // green
-	//materialBufferData.diffuse = {0.05, 0.05, 0.168, 1}; // blue
-	//materialBufferData.specular = 0.05f;
-	//materialBufferData.specular = { 1, 0, 0, 0 }; // red
-	materialBufferData.specular = {1, 0.3921568627, 0.3921568627, 0.05}; // pastel red
+	materialBufferData.ambient = toVec4f(PastelRedMaterial.AmbientColour); // dark red
+	materialBufferData.diffuse = toVec4f(PastelRedMaterial.DiffuseColour); // red
+	materialBufferData.specular = toVec4f(PastelRedMaterial.SpecularColour); // pastel red
+	materialBufferData.shininess = DefaultMaterial.shininess;
 
 	D3D11_BUFFER_DESC materialBuffer = { 0 };
 	materialBuffer.ByteWidth = sizeof(MaterialBuffer);
@@ -339,21 +333,24 @@ void OurTestScene::UpdateLightCameraBuffer(
 	m_dxdevice_context->Unmap(m_light_camera_buffer, 0);
 }
 
-void OurTestScene::UpdateMaterialBuffer(
-	vec4f ambient,
-	vec4f diffuse,
-	vec4f specular)
+void OurTestScene::UpdateMaterialBuffer(Material material)
 {
 	D3D11_MAPPED_SUBRESOURCE resource;
 	m_dxdevice_context->Map(m_material_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
 	MaterialBuffer* materialBuffer = (MaterialBuffer*)resource.pData;
-	materialBuffer->ambient = ambient;
-	materialBuffer->diffuse = diffuse;
-	materialBuffer->specular = specular;
+	materialBuffer->ambient = toVec4f(material.AmbientColour);
+	materialBuffer->diffuse = toVec4f(material.DiffuseColour);
+	materialBuffer->specular = toVec4f(material.SpecularColour);
+	materialBuffer->shininess = material.shininess;
 	m_dxdevice_context->Unmap(m_material_buffer, 0);
 }
 
 void OurTestScene::MoveLight(const vec4f& direction) noexcept
 {
 	m_point_light += direction;
+}
+
+vec4f OurTestScene::toVec4f(vec3f value)
+{
+	return { value.x, value.y, value.z, 0.0f };
 }

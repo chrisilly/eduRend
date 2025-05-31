@@ -12,6 +12,8 @@ cbuffer MaterialBuffer : register(b1)
     float4 ambient;
     float4 diffuse;
     float4 specular;
+    float shininess;
+    float3 padding;
 };
 
 struct PSIn
@@ -35,30 +37,21 @@ float4 PS_main(PSIn input) : SV_Target
 	
 	// Debug shading #2: map and return texture coordinates as a color (blue = 0)
 //	return float4(input.TexCoord, 0, 1);
+    
+    // float4 textureColor = texDiffuse.Sample(texSampler, input.TextCoord);
 	
-    // Old calculations
-    //float3 modelToLight = (lightPosition.xyz - input.WorldPos.xyz);
-    //// If the dot product is negative, it means that point is supposed to be black (without light), hence why we use max()
-    //float4 lambertDiffuse = max(diffuse * dot(modelToLight.xyz, input.Normal), 0);
-    //
-    //float4 reflectedRay = float4(reflect(-modelToLight, input.WorldNormal), 0);
-    //float4 modelToCamera = cameraPosition - input.WorldPos;
-    //
-    //float4 specularHighlight = max(specular * pow(abs(dot(reflectedRay.xyz, modelToCamera.xyz)), specular.w), 0);
-    //
-    //return ambient + lambertDiffuse + specularHighlight;
+    float3 N = normalize(input.Normal);
+    float3 L = normalize(lightPosition.xyz - input.WorldPos.xyz);       // should input.WorldPos be a float3?? Reference other people's code
+    float3 V = normalize(cameraPosition.xyz - input.WorldPos.xyz);      // should input.WorldPos be a float3?? Reference other people's code
+    float3 R = reflect(-L, N);
     
-    // new calculations
-    float3 modelToLight = (lightPosition.xyz - input.WorldPos.xyz).xyz;
-    // If the dot product is negative, it means that point is supposed to be black (without light), hence why we use max()
-    float3 diffuseComponent = max(diffuse * dot(modelToLight, input.Normal), 0).xyz;
+    float3 ambientTerm = ambient.xyz; // * terxtureColor
+    float diff = max(dot(L, N), 0.0f);
+    float3 diffuseTerm = diffuse.xyz * diff;
+    float spec = pow(max(dot(R, V), 0.0f), shininess); // 0.05f = shininess
+    float3 specularTerm = specular.xyz * spec;
     
-    float3 reflectedRay = reflect(-modelToLight, input.WorldNormal);
-    float3 calculatedRelfectedRay = 2 * (modelToLight * input.WorldNormal) * input.WorldNormal - modelToLight;
-    float3 modelToCamera = (cameraPosition - input.WorldPos).xyz;
-    
-    float3 specularComponent = max(specular * pow(max(dot(calculatedRelfectedRay, modelToCamera), 0), specular.w), 0).xyz;
-    //float3 color = { 1, 1, 1 };
-    
-    return float4((ambient.xyz + diffuseComponent + specularComponent), 1);
+    //float3 color = ambientTerm + diffuseTerm;
+    float3 color = ambientTerm + diffuseTerm + specularTerm;
+    return float4(color, 1.0f);
 }

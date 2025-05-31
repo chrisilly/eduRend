@@ -74,7 +74,8 @@ public:
  * @brief Default material
 */
 static Material DefaultMaterial = Material();
-
+static Material PastelRedMaterial = Material({ 1.0f, 0.3921568627f, 0.3921568627f }, { 1.0f, 0.3921568627f, 0.3921568627f });
+//static Material PinkMaterial = Material();
 /**
  * @brief Map between Material using name as the key.
 */

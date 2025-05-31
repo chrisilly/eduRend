@@ -122,8 +122,7 @@ class OurTestScene : public Scene
 
 	void UpdateTransformationBuffer(mat4f model_to_world_matrix, mat4f world_to_view_matrix, mat4f projection_matrix);
 	void UpdateLightCameraBuffer(vec4f light_position, vec4f camera_position);
-	void UpdateMaterialBuffer(vec4f ambient, vec4f diffuse, vec4f specular);
-
+	void UpdateMaterialBuffer(Material material);
 
 public:
 	/**
@@ -165,6 +164,8 @@ public:
 	void OnWindowResized(int window_width, int window_height) override;
 
 	void MoveLight(const vec4f& direction) noexcept;
+
+	vec4f toVec4f(vec3f value);
 };
 
 #endif

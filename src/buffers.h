@@ -30,4 +30,6 @@ struct MaterialBuffer
 	vec4f ambient;
 	vec4f diffuse;
 	vec4f specular;
+	float shininess;
+	vec3f padding;
 };
