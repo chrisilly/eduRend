@@ -165,6 +165,12 @@ public:
 
 	void MoveLight(const vec4f& direction) noexcept;
 
+	void UpdateCameraPosition(const InputHandler& input);
+	void UpdateLightPosition(const InputHandler& input, float dt);
+	void UpdateInput(const InputHandler& input, float dt);
+	void UpdateBrightness(const InputHandler& input);
+	void UpdateColour(const InputHandler& input);
+
 	vec4f toVec4f(vec3f value);
 };
 

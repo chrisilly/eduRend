@@ -60,11 +60,11 @@ void OurTestScene::Init()
 	m_orbiterCube2 = new Cube(m_dxdevice, m_dxdevice_context);
 
 	// Sponza model-to-world transformation
-	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context, PastelRedMaterial, Transform(mat4f::translation(0, -5, 0), mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f), mat4f::scaling(0.05f)));
+	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context, DefaultMaterial, Transform(mat4f::translation(0, -5, 0), mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f), mat4f::scaling(0.05f)));
 
 	const std::string spherePath = "assets/sphere/sphere.obj";
-	m_sphere = new OBJModel(spherePath, m_dxdevice, m_dxdevice_context, Material(), Transform());
-	m_sphere2 = new OBJModel(spherePath, m_dxdevice, m_dxdevice_context, Material(), Transform(mat4f::translation(0, 5, 0), mat4f::rotation(0, 0, 0), mat4f::scaling(0.5f)));
+	m_sphere = new OBJModel(spherePath, m_dxdevice, m_dxdevice_context, DefaultMaterial, Transform());
+	m_sphere2 = new OBJModel(spherePath, m_dxdevice, m_dxdevice_context, DefaultMaterial, Transform(mat4f::translation(0, 5, 0), mat4f::rotation(0, 0, 0), mat4f::scaling(0.5f)));
 
 	m_lightCube = new Cube(m_dxdevice, m_dxdevice_context);
 
@@ -79,27 +79,7 @@ void OurTestScene::Update(
 	float dt,
 	const InputHandler& input_handler)
 {
-	// Basic camera control
-	if (input_handler.IsKeyPressed(Keys::W))
-		//m_camera->Move({ 0.0f, 0.0f, -m_camera_velocity * dt });
-		m_camera->MoveForward();
-	if (input_handler.IsKeyPressed(Keys::S))
-		//m_camera->Move({ 0.0f, 0.0f, m_camera_velocity * dt });
-		m_camera->MoveBack();
-	if (input_handler.IsKeyPressed(Keys::D))
-		//m_camera->Move({ m_camera_velocity * dt, 0.0f, 0.0f });
-		m_camera->MoveRight();
-	if (input_handler.IsKeyPressed(Keys::A))
-		//m_camera->Move({ -m_camera_velocity * dt, 0.0f, 0.0f });
-		m_camera->MoveLeft();
-	if (input_handler.IsKeyPressed(Keys::Up))
-		MoveLight({ 0.0f, m_camera_velocity * dt, 0.0f, 0 });
-	if(input_handler.IsKeyPressed(Keys::Down))
-		MoveLight({ 0.0f, -m_camera_velocity * dt, 0.0f, 0 });
-	if(input_handler.IsKeyPressed(Keys::Right))
-		MoveLight({ 0.0f, 0.0f, -m_camera_velocity * dt, 0 });
-	if(input_handler.IsKeyPressed(Keys::Left))
-		MoveLight({ 0.0f, 0.0f, m_camera_velocity * dt, 0 });
+	UpdateInput(input_handler, dt);
 
 	std::cout << "light position: " << m_point_light << std::endl;
 
@@ -343,6 +323,114 @@ void OurTestScene::UpdateMaterialBuffer(Material material)
 	materialBuffer->specular = toVec4f(material.SpecularColour);
 	materialBuffer->shininess = material.shininess;
 	m_dxdevice_context->Unmap(m_material_buffer, 0);
+}
+
+void OurTestScene::UpdateInput(const InputHandler& input, float dt)
+{
+	if (input.IsKeyPressed(Keys::Up))
+		UpdateLightPosition(input, dt);
+	else if (input.IsKeyPressed(Keys::Down))
+		UpdateColour(input);
+	else if (input.IsKeyPressed(Keys::Left))
+		UpdateBrightness(input);
+	else
+		UpdateCameraPosition(input);
+}
+
+void OurTestScene::UpdateCameraPosition(const InputHandler& input)
+{
+	// Basic camera control
+	if (input.IsKeyPressed(Keys::W))
+		//m_camera->Move({ 0.0f, 0.0f, -m_camera_velocity * dt });
+		m_camera->MoveForward();
+	if (input.IsKeyPressed(Keys::S))
+		//m_camera->Move({ 0.0f, 0.0f, m_camera_velocity * dt });
+		m_camera->MoveBack();
+	if (input.IsKeyPressed(Keys::D))
+		//m_camera->Move({ m_camera_velocity * dt, 0.0f, 0.0f });
+		m_camera->MoveRight();
+	if (input.IsKeyPressed(Keys::A))
+		//m_camera->Move({ -m_camera_velocity * dt, 0.0f, 0.0f });
+		m_camera->MoveLeft();
+}
+
+void OurTestScene::UpdateLightPosition(const InputHandler& input, float dt)
+{
+	if (input.IsKeyPressed(Keys::W))
+		MoveLight({ 0.0f, m_camera_velocity * dt, 0.0f, 0 });
+	if (input.IsKeyPressed(Keys::S))
+		MoveLight({ 0.0f, -m_camera_velocity * dt, 0.0f, 0 });
+	if (input.IsKeyPressed(Keys::D))
+		MoveLight({ 0.0f, 0.0f, -m_camera_velocity * dt, 0 });
+	if (input.IsKeyPressed(Keys::A))
+		MoveLight({ 0.0f, 0.0f, m_camera_velocity * dt, 0 });
+	if (input.IsKeyPressed(Keys::Left))
+		MoveLight({ -m_camera_velocity * dt, 0.0f, 0.0f, 0 });
+	if (input.IsKeyPressed(Keys::Right))
+		MoveLight({ +m_camera_velocity * dt, 0.0f, 0.0f, 0 });
+}
+
+void OurTestScene::UpdateBrightness(const InputHandler& input)
+{
+	vec3f increment = vec3f(0.01f, 0.01f, 0.01f);
+	for (auto& model : models)
+	{
+		if(input.IsKeyPressed(Keys::A))
+			model->material.shininess -= 0.1f;
+		if(input.IsKeyPressed(Keys::D))
+			model->material.shininess += 0.1f;
+		if (input.IsKeyPressed(Keys::W))
+		{
+			model->material.AmbientColour += increment;
+			model->material.DiffuseColour += increment;
+			model->material.SpecularColour += increment;
+		}
+		if (input.IsKeyPressed(Keys::S))
+		{
+			model->material.AmbientColour -= increment;
+			model->material.DiffuseColour -= increment;
+			model->material.SpecularColour -= increment;
+		}
+	}
+}
+
+void OurTestScene::UpdateColour(const InputHandler& input)
+{
+	float increment = 0.01f;
+
+	for (auto& model : models)
+	{
+		if (input.IsKeyPressed(Keys::W))
+		{
+			model->material.AmbientColour.x += increment;
+			model->material.DiffuseColour.x += increment;
+		}
+		if (input.IsKeyPressed(Keys::S))
+		{
+			model->material.AmbientColour.x -= increment;
+			model->material.DiffuseColour.x -= increment;
+		}
+		if (input.IsKeyPressed(Keys::D))
+		{
+			model->material.AmbientColour.y += increment;
+			model->material.DiffuseColour.y += increment;
+		}
+		if (input.IsKeyPressed(Keys::A))
+		{
+			model->material.AmbientColour.y -= increment;
+			model->material.DiffuseColour.y -= increment;
+		}
+		if (input.IsKeyPressed(Keys::Right))
+		{
+			model->material.AmbientColour.z += increment;
+			model->material.DiffuseColour.z += increment;
+		}
+		if (input.IsKeyPressed(Keys::Left))
+		{
+			model->material.AmbientColour.z -= increment;
+			model->material.DiffuseColour.z -= increment;
+		}
+	}
 }
 
 void OurTestScene::MoveLight(const vec4f& direction) noexcept
