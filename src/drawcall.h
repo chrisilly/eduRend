@@ -66,7 +66,7 @@ struct Material
 	// + other texture types
 
 public:
-	Material(vec3f ambientColour = { 0.0f, 0.5f, 0.0f }, vec3f diffuseColour = { 0.0f, 0.5f, 0.0f }, vec3f specularColour = { 1.0f, 1.0f, 1.0f }, float shininess = 10.0f) 
+	Material(vec3f ambientColour = { 0.5f, 0.5f, 0.5f }, vec3f diffuseColour = { 0.5f, 0.5f, 0.5f }, vec3f specularColour = { 1.0f, 1.0f, 1.0f }, float shininess = 50.0f) 
 		: AmbientColour(ambientColour), DiffuseColour(diffuseColour), SpecularColour(specularColour), shininess(shininess) {}
 };
 
