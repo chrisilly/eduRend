@@ -375,10 +375,13 @@ void OurTestScene::UpdateBrightness(const InputHandler& input)
 	vec3f increment = vec3f(0.01f, 0.01f, 0.01f);
 	for (auto& model : models)
 	{
+		// SHININESS
 		if(input.IsKeyPressed(Keys::A))
 			model->material.shininess -= 0.1f;
 		if(input.IsKeyPressed(Keys::D))
 			model->material.shininess += 0.1f;
+
+		// MATERIAL BRIGHTNESS
 		if (input.IsKeyPressed(Keys::W))
 		{
 			model->material.AmbientColour += increment;
@@ -400,6 +403,7 @@ void OurTestScene::UpdateColour(const InputHandler& input)
 
 	for (auto& model : models)
 	{
+		// RED
 		if (input.IsKeyPressed(Keys::W))
 		{
 			model->material.AmbientColour.x += increment;
@@ -410,6 +414,8 @@ void OurTestScene::UpdateColour(const InputHandler& input)
 			model->material.AmbientColour.x -= increment;
 			model->material.DiffuseColour.x -= increment;
 		}
+
+		// GREEN
 		if (input.IsKeyPressed(Keys::D))
 		{
 			model->material.AmbientColour.y += increment;
@@ -420,6 +426,8 @@ void OurTestScene::UpdateColour(const InputHandler& input)
 			model->material.AmbientColour.y -= increment;
 			model->material.DiffuseColour.y -= increment;
 		}
+
+		// BLUE
 		if (input.IsKeyPressed(Keys::Right))
 		{
 			model->material.AmbientColour.z += increment;

@@ -31,5 +31,5 @@ struct MaterialBuffer
 	vec4f diffuse;
 	vec4f specular;
 	float shininess;
-	vec3f padding;
+	vec3f padding; // this is because the buffers need to be a certain size. This variable is never meant to be used for anything
 };
