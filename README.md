@@ -1,41 +1,36 @@
-# eduRend Lab Exercises
+# Test Scene Controls
 
-By **Chris Illy Culling**
+To move the camera, use the **`WASD`** keys.
 
-2025-04-03
+The `UP`, `DOWN`, `LEFT`, and `RIGHT` keys serve as modifiers, and change what the `WASD` (and arrow) keys control.
 
-**36%** — **| OOOO———————— |**
+## While holding the `UP` key: *Light Position*
 
-## Lab 1: Cube & Camera
+`WASD`, `LEFT`, and `RIGHT` now control the position of the light source in the test scene.
 
-- [x] Cube class
-- [x] Mouse-controlled camera rotation
-- [x] Hierarchical transformations
+## While holding the `DOWN` key: *Colour Adjustment*
 
-Non-mandatory:
-- [ ] OBJ-export & import
+`W`: Increase the `red`ness of all models
 
-## Lab 2: First-person Camera, Phong Shading
+`S`: Decrease the `red`ness of all models
 
-- [x] First-person Camera
-    - [x] Movement relative to the camera view direction
-    - [x] Limit x-axis rotation
-- [ ] Constant Buffers
-- [ ] Phong Shading
+`D`: Increase the `green`ness of all models
 
-## Lab 3: Textures and Samplers
+`S`: Decrease the `green`ness of all models
 
-- [ ] Import, bind and use a texture
-- [ ] Sampler, address modes and filters
+`RIGHT`: Increase the `blue`ness of all models
 
-## Lab 4: Normal Mapping
+`LEFT`: Decrease the `blue`ness of all models
 
-- [ ] Implement normal mapping
+## While holding the `LEFT` key: *Brightness Adjustment*
 
-## Lab 5: Reflective Shader and Skybox
+`W`: Increase material colour brightness of all models
 
-- [ ] Phong with reflected component
-- [ ] Skybox
+`S`: Decrease material colour brightness of all models
+
+`D`: Increase material shininess of all models
+
+`A`: Decrease material shininess of all models
 
 # eduRend
 ![eduRend](EDU_2d_s.png)
