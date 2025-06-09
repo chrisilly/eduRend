@@ -34,6 +34,7 @@ OurTestScene::OurTestScene(
 	// + init other CBuffers
 	InitLightCameraBuffer();
 	InitMaterialBuffer();
+	SetSampler(D3D11_FILTER_MIN_MAG_MIP_POINT, D3D11_TEXTURE_ADDRESS_MIRROR);
 
 	// Initialize point light
 	m_point_light = { 0, 3, -3, 0 };
@@ -151,6 +152,7 @@ void OurTestScene::Render()
 	m_dxdevice_context->VSSetConstantBuffers(0, 1, &m_transformation_buffer);
 	m_dxdevice_context->PSSetConstantBuffers(0, 1, &m_light_camera_buffer);
 	m_dxdevice_context->PSSetConstantBuffers(1, 1, &m_material_buffer);
+	m_dxdevice_context->PSSetSamplers(0, 1, &sampler);
 
 	// Obtain the matrices needed for rendering from the camera
 	m_view_matrix = m_camera->WorldToViewMatrix();
@@ -215,6 +217,7 @@ void OurTestScene::Release()
 	// + release other CBuffers
 	SAFE_RELEASE(m_light_camera_buffer);
 	SAFE_RELEASE(m_material_buffer);
+	SAFE_RELEASE(sampler);
 }
 
 void OurTestScene::OnWindowResized(
@@ -289,6 +292,24 @@ void OurTestScene::InitMaterialBuffer()
 	InitData.SysMemSlicePitch = 0;
 
 	ASSERT(hr = m_dxdevice->CreateBuffer(&materialBuffer, &InitData, &m_material_buffer));
+}
+
+void OurTestScene::SetSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureAddressMode)
+{
+	D3D11_SAMPLER_DESC samplerDesc =
+	{
+		filter,
+		textureAddressMode,
+		textureAddressMode,
+		textureAddressMode,
+		0.0f,
+		16,
+		D3D11_COMPARISON_NEVER,
+		{1.0f, 1.0f, 1.0f, 1.0f},
+		-FLT_MAX,
+		FLT_MAX,
+	};
+	m_dxdevice->CreateSamplerState(&samplerDesc, &sampler);
 }
 
 void OurTestScene::UpdateTransformationBuffer(

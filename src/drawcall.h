@@ -67,7 +67,11 @@ struct Material
 
 public:
 	Material(vec3f ambientColour = { 0.5f, 0.5f, 0.5f }, vec3f diffuseColour = { 0.5f, 0.5f, 0.5f }, vec3f specularColour = { 1.0f, 1.0f, 1.0f }, float shininess = 50.0f) 
-		: AmbientColour(ambientColour), DiffuseColour(diffuseColour), SpecularColour(specularColour), shininess(shininess) {}
+		: AmbientColour(ambientColour), DiffuseColour(diffuseColour), SpecularColour(specularColour), shininess(shininess) 
+	{
+		DiffuseTextureFilename = "assets/textures/0001CD_diffuse.jpg";
+		NormalTextureFilename = "assets/textures/0001CD_normal.jpg";
+	}
 };
 
 /**

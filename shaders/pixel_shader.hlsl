@@ -1,6 +1,8 @@
 
 Texture2D texDiffuse : register(t0);
 
+SamplerState texSampler : register(s0);
+
 cbuffer LightCamBuffer : register(b0)
 {
     float4 lightPosition;
@@ -38,7 +40,7 @@ float4 PS_main(PSIn input) : SV_Target
 	// Debug shading #2: map and return texture coordinates as a color (blue = 0)
 //	return float4(input.TexCoord, 0, 1);
     
-    // float4 textureColor = texDiffuse.Sample(texSampler, input.TextCoord);
+    float4 textureColor = texDiffuse.Sample(texSampler, input.TexCoord);
 	
     float3 N = normalize(input.Normal);
     float3 L = normalize(lightPosition.xyz - input.WorldPos.xyz);       // should input.WorldPos be a float3?? Reference other people's code
@@ -52,6 +54,6 @@ float4 PS_main(PSIn input) : SV_Target
     float3 specularTerm = specular.xyz * spec;
     
     //float3 color = ambientTerm + diffuseTerm;
-    float3 color = ambientTerm + diffuseTerm + specularTerm;
+    float3 color = (ambientTerm + diffuseTerm) * textureColor.xyz + specularTerm;
     return float4(color, 1.0f);
 }
