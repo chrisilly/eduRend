@@ -201,10 +201,15 @@ void OurTestScene::Release()
 	SAFE_DELETE(m_cube);
 	SAFE_DELETE(m_orbiterCube);
 	SAFE_DELETE(m_orbiterCube2);
-	SAFE_DELETE(m_sponza);
 	SAFE_DELETE(m_camera);
-	SAFE_DELETE(m_sphere);
-	SAFE_DELETE(m_sphere2);
+
+	//SAFE_DELETE(m_sponza);
+	//SAFE_DELETE(m_sphere);
+	//SAFE_DELETE(m_sphere2);
+	for (auto& model : models)
+	{
+		SAFE_DELETE(model);
+	}
 
 	SAFE_RELEASE(m_transformation_buffer);
 	// + release other CBuffers
