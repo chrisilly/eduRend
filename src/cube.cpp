@@ -1,9 +1,37 @@
 #include "cube.h"
 
-Cube::Cube(
-	ID3D11Device* dxdevice,
-	ID3D11DeviceContext* dxdevice_context)
-	: Model(dxdevice, dxdevice_context)
+//Cube::Cube(
+//	ID3D11Device* dxdevice,
+//	ID3D11DeviceContext* dxdevice_context)
+//	: Model(dxdevice, dxdevice_context)
+//{
+//	InitializeCube(dxdevice);
+//}
+
+Cube::Cube(ID3D11Device* dxdevice, ID3D11DeviceContext* dxdevice_context, 
+	Material material, 
+	Transform transform)
+	: Model(dxdevice, dxdevice_context, material, transform)
+{
+	InitializeCube();
+}
+
+
+void Cube::Render() const
+{
+	// Bind our vertex buffer
+	const UINT32 stride = sizeof(Vertex); //  sizeof(float) * 8;
+	const UINT32 offset = 0;
+	m_dxdevice_context->IASetVertexBuffers(0, 1, &m_vertex_buffer, &stride, &offset);
+
+	// Bind our index buffer
+	m_dxdevice_context->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R32_UINT, 0);
+
+	// Make the drawcall
+	m_dxdevice_context->DrawIndexed(m_number_of_indices, 0, 0);
+}
+
+void Cube::InitializeCube()
 {
 	// Vertex and index arrays
 	// Once their data is loaded to GPU buffers, they are not needed anymore
@@ -15,7 +43,7 @@ Cube::Cube(
 	//std::vector<Vertex> Front = { 0, 0, 1 };
 
 	// Populate the vertex array with 4 Vertices
-	Vertex v0, v1, v2, v3, 
+	Vertex v0, v1, v2, v3,
 		v4, v5, v6, v7,
 		v8, v9, v10, v11,
 		v12, v13, v14, v15,
@@ -30,11 +58,11 @@ Cube::Cube(
 	v1.Position = { 0.5, -0.5f, 0.5 };
 	v1.Normal = { 0, 0, 1 };
 	v1.TexCoord = { 0, 1 };
-	
+
 	v2.Position = { 0.5, 0.5f, 0.5 };
 	v2.Normal = { 0, 0, 1 };
 	v2.TexCoord = { 1, 1 };
-	
+
 	v3.Position = { -0.5, 0.5f, 0.5 };
 	v3.Normal = { 0, 0, 1 };
 	v3.TexCoord = { 1, 0 };
@@ -60,7 +88,7 @@ Cube::Cube(
 	v8.Position = { 0.5, 0.5f, -0.5 };
 	v8.Normal = { 0, 0, -1 };
 	v8.TexCoord = { 0, 0 };
-	
+
 	v9.Position = { -0.5, 0.5f, -0.5 };
 	v9.Normal = { 0, 0, -1 };
 	v9.TexCoord = { 0, 1 };
@@ -150,7 +178,7 @@ Cube::Cube(
 	vertices.push_back(v23);
 
 	// Populate the index array with two triangles
-	
+
 	// Back Face
 	// Triangle #1
 	indices.push_back(0);
@@ -223,7 +251,7 @@ Cube::Cube(
 	D3D11_SUBRESOURCE_DATA vertexData = { 0 };
 	vertexData.pSysMem = &vertices[0];
 	// Create vertex buffer on device using descriptor & data
-	dxdevice->CreateBuffer(&vertexbufferDesc, &vertexData, &m_vertex_buffer);
+	m_dxdevice->CreateBuffer(&vertexbufferDesc, &vertexData, &m_vertex_buffer);
 	SETNAME(m_vertex_buffer, "VertexBuffer");
 
 	//  Index array descriptor
@@ -237,23 +265,8 @@ Cube::Cube(
 	D3D11_SUBRESOURCE_DATA indexData{ 0 };
 	indexData.pSysMem = &indices[0];
 	// Create index buffer on device using descriptor & data
-	dxdevice->CreateBuffer(&indexbufferDesc, &indexData, &m_index_buffer);
+	m_dxdevice->CreateBuffer(&indexbufferDesc, &indexData, &m_index_buffer);
 	SETNAME(m_index_buffer, "IndexBuffer");
 
 	m_number_of_indices = (unsigned int)indices.size();
-}
-
-
-void Cube::Render() const
-{
-	// Bind our vertex buffer
-	const UINT32 stride = sizeof(Vertex); //  sizeof(float) * 8;
-	const UINT32 offset = 0;
-	m_dxdevice_context->IASetVertexBuffers(0, 1, &m_vertex_buffer, &stride, &offset);
-
-	// Bind our index buffer
-	m_dxdevice_context->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R32_UINT, 0);
-
-	// Make the drawcall
-	m_dxdevice_context->DrawIndexed(m_number_of_indices, 0, 0);
 }

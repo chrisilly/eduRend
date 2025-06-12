@@ -56,9 +56,9 @@ void OurTestScene::Init()
 
 	// Create objects
 	m_quad = new QuadModel(m_dxdevice, m_dxdevice_context);
-	m_cube = new Cube(m_dxdevice, m_dxdevice_context);
-	m_orbiterCube = new Cube(m_dxdevice, m_dxdevice_context);
-	m_orbiterCube2 = new Cube(m_dxdevice, m_dxdevice_context);
+	m_cube = new Cube(m_dxdevice, m_dxdevice_context, DefaultMaterial, Transform(mat4f::translation(0, 0, 0), mat4f::rotation(0, 0, 0), mat4f::scaling(1.5f)));
+	m_orbiterCube = new Cube(m_dxdevice, m_dxdevice_context, DefaultMaterial, Transform(mat4f::translation(0, 0, 0), mat4f::rotation(0, 0, 0), mat4f::scaling(1.0f)));
+	m_orbiterCube2 = new Cube(m_dxdevice, m_dxdevice_context, DefaultMaterial, Transform(mat4f::translation(0, 0, 0), mat4f::rotation(0, 0, 0), mat4f::scaling(0.5f)));
 
 	// Sponza model-to-world transformation
 	m_sponza = new OBJModel("assets/crytek-sponza/sponza.obj", m_dxdevice, m_dxdevice_context, DefaultMaterial, Transform(mat4f::translation(0, -5, 0), mat4f::rotation(fPI / 2, 0.0f, 1.0f, 0.0f), mat4f::scaling(0.05f)));
@@ -67,9 +67,9 @@ void OurTestScene::Init()
 	m_sphere = new OBJModel(spherePath, m_dxdevice, m_dxdevice_context, DefaultMaterial, Transform());
 	m_sphere2 = new OBJModel(spherePath, m_dxdevice, m_dxdevice_context, DefaultMaterial, Transform(mat4f::translation(0, 5, 0), mat4f::rotation(0, 0, 0), mat4f::scaling(0.5f)));
 
-	m_lightCube = new Cube(m_dxdevice, m_dxdevice_context);
+	m_lightCube = new Cube(m_dxdevice, m_dxdevice_context, DefaultMaterial, Transform(mat4f::translation(m_point_light.x,m_point_light.y,m_point_light.z), mat4f::rotation(0, 0, 0), mat4f::scaling(0.3f)));
 
-	models = { m_sponza, m_sphere, m_sphere2 };	
+	models = { m_sponza, m_sphere, m_sphere2, m_lightCube, m_cube, m_orbiterCube, m_orbiterCube2 };	//, m_lightCube, m_cube, m_orbiterCube, m_orbiterCube2
 }
 
 //
@@ -84,15 +84,6 @@ void OurTestScene::Update(
 
 	std::cout << "light position: " << m_point_light << std::endl;
 
-	#pragma region LAB 1 CAMERA SOLUTION DEPRECATED
-	//long mousedx = input_handler.GetMouseDeltaX();
-	//long mousedy = input_handler.GetMouseDeltaY();
-	//float sensitivity = (1 / 300.0f);
-	//
-	//m_camera->RotateX(mousedx * sensitivity);
-	//m_camera->RotateY(mousedy * sensitivity);
-	#pragma endregion
-
 	// I think the X and Y are supposed to be swapped here? (yaw = Y and pitch = X). I think maybe the camera WorldToMatrix transform calculation is wrong, or my rotate methods are wrong
 	// NO! BECAUSE IT'S ABOUT *ROTATION* AROUND THE AXES, NOT MOVEMENT *IN* THE AXES. (Rotation around X-axis = movement on the Y axis, i.e. looking up and down)
 	m_camera->Rotate(input_handler.GetMouseInputX(), input_handler.GetMouseInputY());
@@ -103,29 +94,28 @@ void OurTestScene::Update(
 	// If no transformation is desired, an identity matrix can be obtained 
 	// via e.g. Mquad = linalg::mat4f_identity; 
 
-	m_lightCube_transform = mat4f::translation(m_point_light.x, m_point_light.y, m_point_light.z) *
-		mat4f::scaling(0.3, 0.3, 0.3);
+	m_lightCube->transform = mat4f::translation(m_point_light.x, m_point_light.y, m_point_light.z) * mat4f::scaling(0.3f);
 
 	// Quad model-to-world transformation
 	m_quad_transform = mat4f::translation(0, 0, 0) *			// No translation
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
-		mat4f::scaling(1.5, 1.5, 1.5);				// Scale uniformly to 150%
+		mat4f::scaling(1.5f);				// Scale uniformly to 150%
 
-	m_cube_transform = mat4f::translation(0, 0, 0) *			// No translation
+	m_cube->transform = mat4f::translation(0, 0, 0) *			// No translation
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
-		mat4f::scaling(1.5, 1.5, 1.5);				// Scale uniformly to 150%
-
-	m_orbiterCube_transform = mat4f::translation(4, 0, 0) *			// No translation
+		mat4f::scaling(1.5f);				// Scale uniformly to 150%
+	
+	m_orbiterCube->transform = mat4f::translation(4, 0, 0) *			// No translation
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
-		mat4f::scaling(1, 1, 1);				// Scale uniformly to 150%
-
-	m_orbiterCube_transform = m_cube_transform * m_orbiterCube_transform;
-
-	m_orbiterCube2_transform = mat4f::translation(-1.5, 0, 0) *			// No translation
+		mat4f::scaling(1.0f);				// Scale uniformly to 150%
+	
+	m_orbiterCube->transform = m_cube->transform.TRS * m_orbiterCube->transform.TRS;
+	
+	m_orbiterCube2->transform = mat4f::translation(-1.5, 0, 0) *			// No translation
 		mat4f::rotation(-m_angle, 0.0f, 1.0f, 0.0f) *	// Rotate continuously around the y-axis
-		mat4f::scaling(0.5, 0.5, 0.5);				// Scale uniformly to 150%
-
-	m_orbiterCube2_transform = m_orbiterCube_transform * m_orbiterCube2_transform;
+		mat4f::scaling(0.5f);				// Scale uniformly to 150%
+	
+	m_orbiterCube2->transform = m_orbiterCube->transform.TRS * m_orbiterCube2->transform.TRS;
 
 	// nvm, the camera doesn't have a transform, wtf??
 	// I was gonna make the camera a child of m_orbiterCube2 and make it go weeeeee
@@ -162,30 +152,6 @@ void OurTestScene::Render()
 	UpdateLightCameraBuffer(m_point_light, m_camera->GetPosition().xyz0());
 	UpdateMaterialBuffer(PastelRedMaterial);
 
-	m_lightCube_transform.translation(m_point_light.x, m_point_light.y, m_point_light.z);
-	UpdateTransformationBuffer(m_lightCube_transform, m_view_matrix, m_projection_matrix);
-	m_lightCube->Render();
-
-	// Load matrices + the Quad's transformation to the device and render it
-	UpdateTransformationBuffer(m_quad_transform, m_view_matrix, m_projection_matrix);
-	//m_quad->Render();
-
-	UpdateTransformationBuffer(m_cube_transform, m_view_matrix, m_projection_matrix);
-	m_cube->Render();
-
-	UpdateTransformationBuffer(m_orbiterCube_transform, m_view_matrix, m_projection_matrix);
-	m_orbiterCube->Render();
-
-	UpdateTransformationBuffer(m_orbiterCube2_transform, m_view_matrix, m_projection_matrix);
-	m_orbiterCube2->Render();
-
-	// Load matrices + Sponza's transformation to the device and render it
-	//UpdateTransformationBuffer(m_sponza_transform, m_view_matrix, m_projection_matrix);
-	//m_sponza->Render();
-
-	//UpdateTransformationBuffer(m_sphere->transform.TRS, m_view_matrix, m_projection_matrix);
-	//m_sphere->Render();
-
 	for (auto& model : models)
 	{
 		vec4f modelAmbient =	{ model->material.AmbientColour.x, model->material.AmbientColour.y, model->material.AmbientColour.z, 0 };
@@ -200,14 +166,8 @@ void OurTestScene::Render()
 void OurTestScene::Release()
 {
 	SAFE_DELETE(m_quad);
-	SAFE_DELETE(m_cube);
-	SAFE_DELETE(m_orbiterCube);
-	SAFE_DELETE(m_orbiterCube2);
 	SAFE_DELETE(m_camera);
 
-	//SAFE_DELETE(m_sponza);
-	//SAFE_DELETE(m_sphere);
-	//SAFE_DELETE(m_sphere2);
 	for (auto& model : models)
 	{
 		SAFE_DELETE(model);
