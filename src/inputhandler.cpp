@@ -132,6 +132,14 @@ bool InputHandler::IsKeyPressed(Keys key) const noexcept
 	return m_keyboard_state[(int)key] & 0x80;
 }
 
+bool InputHandler::IsKeyPressedAndReleased(Keys key) const noexcept
+{
+	if (m_keyboard_state[(int)key] & 0x80 && m_keyboard_state[(int)key] != m_previous_keyboard_state[(int)key]) 
+		return true;
+
+	return false;
+}
+
 LONG InputHandler::GetMouseDeltaX() const noexcept
 {
 	return m_mouse_state.lX;
@@ -155,6 +163,11 @@ float InputHandler::GetMouseInputY() const noexcept
 bool InputHandler::ReadKeyboard() noexcept
 {
 	HRESULT result;
+
+	for (size_t i = 0; i < 256; i++)
+	{
+		m_previous_keyboard_state[i] = m_keyboard_state[i];
+	}
 
 	result = m_keyboard->GetDeviceState(sizeof(m_keyboard_state), (LPVOID)&m_keyboard_state);
 	if (FAILED(result))

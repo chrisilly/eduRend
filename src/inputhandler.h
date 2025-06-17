@@ -21,7 +21,15 @@ enum class Keys
 	W = DIK_W,
 	A = DIK_A,
 	S = DIK_S,
-	D = DIK_D
+	D = DIK_D,
+	Q = DIK_Q,
+	E = DIK_E,
+	F = DIK_F,
+	G = DIK_G,
+	N = DIK_N,
+	Z = DIK_Z,
+	Shift = DIK_LSHIFT,
+	Tab = DIK_TAB
 };
 
 /**
@@ -36,7 +44,7 @@ public:
 	 * @see Initialize(HINSTANCE, HWND, int, int)
 	*/
 	constexpr InputHandler() noexcept 
-		: m_direct_input(nullptr), m_keyboard(nullptr), m_mouse(nullptr), m_keyboard_state(), m_mouse_state(), m_previous_mouse_state(), m_screen_width(0), m_screen_height(0), m_mouse_x(0), m_mouse_y(0), m_mouse_sensitivity(0.003f) {}
+		: m_direct_input(nullptr), m_keyboard(nullptr), m_mouse(nullptr), m_keyboard_state(), m_previous_keyboard_state(), m_mouse_state(), m_previous_mouse_state(), m_screen_width(0), m_screen_height(0), m_mouse_x(0), m_mouse_y(0), m_mouse_sensitivity(0.003f) {}
 
 	/**
 	 * @brief Destructor, does nothing, see Shutdown()
@@ -97,6 +105,7 @@ public:
 	 * @return True if the key is currently held down.
 	*/
 	bool IsKeyPressed(Keys key) const noexcept;
+	bool IsKeyPressedAndReleased(Keys key) const noexcept;
 
 	/**
 	 * @brief Gets the mouse X delta since last Update()
@@ -127,6 +136,7 @@ private:
 	IDirectInputDevice8* m_keyboard;
 	IDirectInputDevice8* m_mouse;
 	unsigned char m_keyboard_state[256];
+	unsigned char m_previous_keyboard_state[256];
 	DIMOUSESTATE m_mouse_state, m_previous_mouse_state;
 	int m_screen_width, m_screen_height;
 	int m_mouse_x, m_mouse_y;

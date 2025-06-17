@@ -73,6 +73,8 @@ protected:
 */
 class OurTestScene : public Scene
 {
+	bool displayNormalMaps = false;
+
 	//
 	// Constant buffers (CBuffers) for data that is sent to shaders
 	//

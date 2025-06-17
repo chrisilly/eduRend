@@ -293,7 +293,7 @@ void OurTestScene::UpdateMaterialBuffer(Material material)
 	m_dxdevice_context->Map(m_material_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
 	MaterialBuffer* materialBuffer = (MaterialBuffer*)resource.pData;
 	materialBuffer->ambient = vec4f(material.AmbientColour, 0.0f);
-	materialBuffer->diffuse = vec4f(material.DiffuseColour, material.HasNormalMap());
+	materialBuffer->diffuse = vec4f(material.DiffuseColour, displayNormalMaps && material.HasNormalMap());
 	materialBuffer->specular = vec4f(material.SpecularColour, material.shininess);
 	m_dxdevice_context->Unmap(m_material_buffer, 0);
 }
@@ -308,6 +308,9 @@ void OurTestScene::UpdateInput(const InputHandler& input, float dt)
 		UpdateBrightness(input);
 	else
 		UpdateCameraPosition(input);
+
+	if (input.IsKeyPressedAndReleased(Keys::N))
+		displayNormalMaps = !displayNormalMaps;
 }
 
 void OurTestScene::UpdateCameraPosition(const InputHandler& input)
