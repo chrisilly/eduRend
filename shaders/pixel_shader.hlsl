@@ -14,8 +14,6 @@ cbuffer MaterialBuffer : register(b1)
     float4 ambient;
     float4 diffuse;
     float4 specular;
-    float shininess;
-    float3 padding;
 };
 
 struct PSIn
@@ -50,7 +48,7 @@ float4 PS_main(PSIn input) : SV_Target
     float3 ambientTerm = ambient.xyz; // * terxtureColor
     float diff = max(dot(L, N), 0.0f);
     float3 diffuseTerm = diffuse.xyz * diff;
-    float spec = pow(max(dot(R, V), 0.0f), shininess); // 0.05f = shininess
+    float spec = pow(max(dot(R, V), 0.0f), specular.w);
     float3 specularTerm = specular.xyz * spec;
     
     //float3 color = ambientTerm + diffuseTerm;

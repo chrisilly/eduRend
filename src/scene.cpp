@@ -231,13 +231,6 @@ void OurTestScene::InitMaterialBuffer()
 {
 	HRESULT hr;
 
-	// Let's set our default data to start
-	MaterialBuffer materialBufferData;
-	materialBufferData.ambient = toVec4f(PastelRedMaterial.AmbientColour); // dark red
-	materialBufferData.diffuse = toVec4f(PastelRedMaterial.DiffuseColour); // red
-	materialBufferData.specular = toVec4f(PastelRedMaterial.SpecularColour); // pastel red
-	materialBufferData.shininess = DefaultMaterial.shininess;
-
 	D3D11_BUFFER_DESC materialBuffer = { 0 };
 	materialBuffer.ByteWidth = sizeof(MaterialBuffer);
 	materialBuffer.Usage = D3D11_USAGE_DYNAMIC;
@@ -246,12 +239,7 @@ void OurTestScene::InitMaterialBuffer()
 	materialBuffer.MiscFlags = 0;
 	materialBuffer.StructureByteStride = 0;
 
-	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = &materialBufferData;
-	InitData.SysMemPitch = 0;
-	InitData.SysMemSlicePitch = 0;
-
-	ASSERT(hr = m_dxdevice->CreateBuffer(&materialBuffer, &InitData, &m_material_buffer));
+	ASSERT(hr = m_dxdevice->CreateBuffer(&materialBuffer, nullptr, &m_material_buffer));
 }
 
 void OurTestScene::SetSampler(D3D11_FILTER filter, D3D11_TEXTURE_ADDRESS_MODE textureAddressMode)
@@ -304,10 +292,9 @@ void OurTestScene::UpdateMaterialBuffer(Material material)
 	D3D11_MAPPED_SUBRESOURCE resource;
 	m_dxdevice_context->Map(m_material_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
 	MaterialBuffer* materialBuffer = (MaterialBuffer*)resource.pData;
-	materialBuffer->ambient = toVec4f(material.AmbientColour);
-	materialBuffer->diffuse = toVec4f(material.DiffuseColour);
-	materialBuffer->specular = toVec4f(material.SpecularColour);
-	materialBuffer->shininess = material.shininess;
+	materialBuffer->ambient = vec4f(material.AmbientColour, 0.0f);
+	materialBuffer->diffuse = vec4f(material.DiffuseColour, 0.0f);
+	materialBuffer->specular = vec4f(material.SpecularColour, material.shininess);
 	m_dxdevice_context->Unmap(m_material_buffer, 0);
 }
 
@@ -430,9 +417,4 @@ void OurTestScene::UpdateColour(const InputHandler& input)
 void OurTestScene::MoveLight(const vec4f& direction) noexcept
 {
 	m_point_light += direction;
-}
-
-vec4f OurTestScene::toVec4f(vec3f value)
-{
-	return { value.x, value.y, value.z, 0.0f };
 }

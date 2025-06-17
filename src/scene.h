@@ -173,8 +173,6 @@ public:
 	void UpdateInput(const InputHandler& input, float dt);
 	void UpdateBrightness(const InputHandler& input);
 	void UpdateColour(const InputHandler& input);
-
-	vec4f toVec4f(vec3f value);
 };
 
 #endif
