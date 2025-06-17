@@ -1,5 +1,6 @@
 
 Texture2D texDiffuse : register(t0);
+Texture2D normalMap : register(t1);
 
 SamplerState texSampler : register(s0);
 
@@ -18,16 +19,27 @@ cbuffer MaterialBuffer : register(b1)
 
 struct PSIn
 {
-	float4 Pos  : SV_Position;
-	float3 Normal : NORMAL;
+    float4 Pos : SV_Position;
+    float3 Normal : NORMAL;
+    float3 Tangent : TANGENT;
+    float3 Binormal : BINORMAL;
 	float2 TexCoord : TEX;
-    float3 WorldNormal : WORLD_NORMAL;
     float4 WorldPos : WORLD_POSITION;
 };
 
 //-----------------------------------------------------------------------------------------
 // Pixel Shader
 //-----------------------------------------------------------------------------------------
+
+// Only use this for rendering normal mapped materials
+float3 GetNormal(float3 tangent, float3 binormal, float3 normal, float2 texCoord)
+{
+    float3 encodedNormal = normalMap.Sample(texSampler, texCoord).xyz;
+    float3 localNormal = normalize(float3(encodedNormal.x * 2 - 1, encodedNormal.y * 2 - 1, encodedNormal.z * 2 - 1));
+    float3x3 tbnMatrix = transpose(float3x3(tangent, binormal, normal));
+    
+    return normalize(mul(tbnMatrix, localNormal));
+}
 
 float4 PS_main(PSIn input) : SV_Target
 {
@@ -44,11 +56,11 @@ float4 PS_main(PSIn input) : SV_Target
     
     diffuseColour = texDiffuse.Sample(texSampler, input.TexCoord).xyz;
 	
-    float3 normal = normalize(input.Normal);
-    float3 lightVector = lightPosition.xyz - input.WorldPos.xyz;       // should input.WorldPos be a float3?? Reference other people's code
+    float3 normal = normalMap ? GetNormal(input.Tangent, input.Binormal, input.Normal, input.TexCoord) : normalize(input.Normal);
+    float3 lightVector = lightPosition.xyz - input.WorldPos.xyz;
     float3 lightNormal = normalize(lightVector);
     float3 cameraVector = cameraPosition.xyz - input.WorldPos.xyz;
-    float3 cameraNormal = normalize(cameraVector);      // should input.WorldPos be a float3?? Reference other people's code
+    float3 cameraNormal = normalize(cameraVector);
     float3 reflectionVector = reflect(-lightNormal, normal);
     //reflectionVector = reflect(lightvector, normal);
     //float3 reflectionNormal = normalize(reflectionVector);
