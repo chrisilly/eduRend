@@ -82,7 +82,7 @@ void OurTestScene::Update(
 {
 	UpdateInput(input_handler, dt);
 
-	std::cout << "light position: " << m_point_light << std::endl;
+	//std::cout << "light position: " << m_point_light << std::endl;
 
 	// I think the X and Y are supposed to be swapped here? (yaw = Y and pitch = X). I think maybe the camera WorldToMatrix transform calculation is wrong, or my rotate methods are wrong
 	// NO! BECAUSE IT'S ABOUT *ROTATION* AROUND THE AXES, NOT MOVEMENT *IN* THE AXES. (Rotation around X-axis = movement on the Y axis, i.e. looking up and down)
@@ -293,7 +293,7 @@ void OurTestScene::UpdateMaterialBuffer(Material material)
 	m_dxdevice_context->Map(m_material_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
 	MaterialBuffer* materialBuffer = (MaterialBuffer*)resource.pData;
 	materialBuffer->ambient = vec4f(material.AmbientColour, 0.0f);
-	materialBuffer->diffuse = vec4f(material.DiffuseColour, 0.0f);
+	materialBuffer->diffuse = vec4f(material.DiffuseColour, material.HasNormalMap());
 	materialBuffer->specular = vec4f(material.SpecularColour, material.shininess);
 	m_dxdevice_context->Unmap(m_material_buffer, 0);
 }

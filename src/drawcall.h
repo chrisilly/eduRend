@@ -55,23 +55,29 @@ struct Material
     
 	std::string Name; //!< Name of the Material
 
+	std::string defaultDiffuseTexture = "assets/textures/0001CD_diffuse.jpg";
+	std::string defaultNormalMap = "assets/textures/0001CD_normal.jpg";
 	// File paths to textures
-	std::string DiffuseTextureFilename; //!< Diffuse texture path
-	std::string NormalTextureFilename; //!< Normal texture path
+	std::string DiffuseTextureFilename = defaultDiffuseTexture; //!< Diffuse texture path
+	std::string NormalTextureFilename = defaultNormalMap; //!< Normal texture path
 
 	// + more texture types (extend OBJLoader::LoadMaterials if needed)
 
 	// Device textures
 	Texture DiffuseTexture; //!< Diffuse Texture
 	// + other texture types
+	Texture NormalMap;
+
+	bool HasNormalMap() const
+	{
+		bool hasDefaultTexture = DiffuseTextureFilename == defaultDiffuseTexture;
+		bool hasDefaultNormalMap = defaultNormalMap == NormalTextureFilename;
+		return (hasDefaultTexture && hasDefaultNormalMap) || (!hasDefaultTexture && !hasDefaultNormalMap);
+	}
 
 public:
 	Material(vec3f ambientColour = { 0.5f, 0.5f, 0.5f }, vec3f diffuseColour = { 0.5f, 0.5f, 0.5f }, vec3f specularColour = { 1.0f, 1.0f, 1.0f }, float shininess = 50.0f) 
-		: AmbientColour(ambientColour), DiffuseColour(diffuseColour), SpecularColour(specularColour), shininess(shininess) 
-	{
-		DiffuseTextureFilename = "assets/textures/0001CD_diffuse.jpg";
-		NormalTextureFilename = "assets/textures/0001CD_normal.jpg";
-	}
+		: AmbientColour(ambientColour), DiffuseColour(diffuseColour), SpecularColour(specularColour), shininess(shininess) {}
 };
 
 /**

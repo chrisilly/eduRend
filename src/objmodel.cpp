@@ -73,6 +73,7 @@ OBJModel::OBJModel(
 
 			hr = LoadTextureFromFile(
 				dxdevice,
+				dxdevice_context,
 				material.DiffuseTextureFilename.c_str(),
 				&material.DiffuseTexture);
 			std::cout << "\t" << material.DiffuseTextureFilename
@@ -81,6 +82,16 @@ OBJModel::OBJModel(
 
 		// + other texture types here - see Material class
 		// ...
+
+		if (material.NormalTextureFilename.size()) {
+			hr = LoadTextureFromFile(
+				dxdevice,
+				dxdevice_context,
+				material.NormalTextureFilename.c_str(),
+				& material.NormalMap);
+			std::cout << "\t" << material.NormalTextureFilename
+				<< (SUCCEEDED(hr) ? " - OK" : "- FAILED") << std::endl;
+		}
 	}
 	std::cout << "Done." << std::endl;
 
@@ -106,6 +117,7 @@ void OBJModel::Render() const
 		// Bind diffuse texture to slot t0 of the PS
 		m_dxdevice_context->PSSetShaderResources(0, 1, &material.DiffuseTexture.TextureView);
 		// + bind other textures here, e.g. a normal map, to appropriate slots
+		m_dxdevice_context->PSSetShaderResources(1, 1, &material.NormalMap.TextureView);
 
 		// Make the drawcall
 		m_dxdevice_context->DrawIndexed(indexRange.Size, indexRange.Start, 0);
