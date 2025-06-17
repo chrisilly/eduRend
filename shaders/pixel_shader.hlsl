@@ -43,6 +43,10 @@ float3 GetNormal(float3 tangent, float3 binormal, float3 normal, float2 texCoord
 
 float4 PS_main(PSIn input) : SV_Target
 {
+    bool toggleAmbient = true;
+    bool toggleDiffuse = true;
+    bool toggleSpecular = true;
+    
     float3 ambientColour = ambient.xyz;
     float3 diffuseColour = diffuse.xyz;
     float3 specularColour = specular.xyz;
@@ -77,10 +81,16 @@ float4 PS_main(PSIn input) : SV_Target
 	// Debug shading #2: map and return texture coordinates as a color (blue = 0)
     // return float4(input.TexCoord, 0, 1);
     
-    colour.xyz += ambientColour * diffuseColour * ambientStrength;
-    colour.xyz += diffuseColour * lightStrength;
-    colour.xyz += specularColour * specularStrength; // * cube map color
-    //colour = float4((ambientColour + (diffuse.xyz * diff)) * diffuseColour.xyz + specularColour * spec, 1.0f);
+    if (toggleAmbient)
+        colour.xyz += ambientColour * diffuseColour * ambientStrength;
+    if (toggleDiffuse)
+        colour.xyz += diffuseColour * lightStrength;
+    if (toggleSpecular)
+        colour.xyz += specularColour * specularStrength; // * cube map color
+    
+    //return float4(input.Tangent * 0.5f + 0.5f, 1);
+    //reutrn float4(input.Binormal * 0.5f + 0.5f, 1);
+    //return float4((ambientColour + (diffuse.xyz * diff)) * diffuseColour.xyz + specularColour * spec, 1.0f);
     
     return colour;
 }
